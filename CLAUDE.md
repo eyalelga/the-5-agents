@@ -32,7 +32,8 @@ the 5 agents/
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
 │   │   ├── obsidian-bases/            ← Obsidian Bases (.base files)
 │   │   ├── skill-creator/             ← build, test & optimize new skills
-│   │   └── nano-banana-2/             ← image generation via Google Nano Banana 2 MCP
+│   │   ├── nano-banana-2/             ← image generation via Google Nano Banana 2 MCP
+│   │   └── superpowers/               ← 14 development methodology skills (TDD, planning, debugging...)
 │   └── settings.json          ← permissions, hooks & MCP servers
 ├── reference/                 ← reference images for style analysis (input to Yuval)
 ├── outputs/                   ← generated images (output from Yuval)
