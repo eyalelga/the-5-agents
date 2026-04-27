@@ -30,6 +30,7 @@ Before delegating any task, answer these three questions:
 | Agent | Specialty | When to Invoke |
 |-------|-----------|----------------|
 | Yuval | `.claude/agents/yuval.md` | Image generation — scans reference/, crafts style-consistent prompts, generates via nano-banana-2, saves to outputs/ |
+| Yael | `.claude/agents/yael.md` | Content writing — rewrites raw articles from Content/ in project style, calls Yuval for images, saves to Output/, archives originals to Content/Ready/ |
 
 When no specialized agent matches the task, handle it directly using your available tools.
 

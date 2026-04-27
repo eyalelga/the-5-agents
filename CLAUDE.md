@@ -23,10 +23,9 @@ The vault at `vault/` is the long-term memory of this project. Skipping this pro
 the 5 agents/
 ├── .claude/
 │   ├── agents/
-│   │   └── ceo_agent.md       ← Eyal — CEO Master Agent (orchestrator)
-│   ├── agents/
 │   │   ├── ceo_agent.md       ← Eyal — CEO Master Agent (orchestrator)
-│   │   └── yuval.md           ← Yuval — Creative Image Agent
+│   │   ├── yuval.md           ← Yuval — Creative Image Agent
+│   │   └── yael.md            ← Yael — Content Writer (LLM-only)
 │   ├── skills/
 │   │   ├── obsidian-vault-workflow/   ← mandatory session protocol
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
@@ -35,6 +34,9 @@ the 5 agents/
 │   │   ├── nano-banana-2/             ← image generation via Google Nano Banana 2 MCP
 │   │   └── superpowers/               ← 14 development methodology skills (TDD, planning, debugging...)
 │   └── settings.json          ← permissions, hooks & MCP servers
+├── Content/                   ← raw articles waiting for Yael to rewrite
+│   └── Ready/                 ← originals archived after Yael processes them
+├── Output/                    ← Yael's finished rewritten articles
 ├── reference/                 ← reference images for style analysis (input to Yuval)
 ├── outputs/                   ← generated images (output from Yuval)
 ├── vault/                     ← long-term memory (Obsidian)
@@ -54,6 +56,7 @@ Sub-agents will be registered in the CEO agent's Sub-Agent Registry table as the
 | Agent | File | Specialty |
 |-------|------|-----------|
 | Yuval | `.claude/agents/yuval.md` | Image generation with style consistency |
+| Yael | `.claude/agents/yael.md` | Content rewriting — LLM-only, calls Yuval for images |
 
 ### MCP Servers
 
@@ -61,7 +64,7 @@ Sub-agents will be registered in the CEO agent's Sub-Agent Registry table as the
 |--------|---------|------------|
 | nano-banana-2 | Google Nano Banana 2 image generation | `mcpServers.nano-banana-2` in settings.json |
 
-> **Action required:** Replace `YOUR_API_KEY_HERE` in `.claude/settings.json` with a real API key, and verify the MCP package name `@google/nano-banana-mcp` once the model is officially available.
+> **Note:** MCP is configured and active. Set `GEMINI_API_KEY` in `.env`.
 
 ## Commands
 

@@ -9,3 +9,4 @@
 - [[skill-creator-installation]] — התקנת skill-creator מ-anthropics/skills לבניית skills חדשים
 - [[nano-banana-skill-yuval-agent]] — יצירת nano-banana-2 skill וסוכן יובל לייצור תמונות עם עקביות ויזואלית
 - [[image-generation]] — לוג ייצור תמונות עם יובל ו-nano-banana-2
+- [[yael-agent-creation]] — יצירת סוכן יעל, כותבת תוכן LLM-Only עם שיתוף פעולה עם יובל
