@@ -24,12 +24,18 @@ the 5 agents/
 ├── .claude/
 │   ├── agents/
 │   │   └── ceo_agent.md       ← Eyal — CEO Master Agent (orchestrator)
+│   ├── agents/
+│   │   ├── ceo_agent.md       ← Eyal — CEO Master Agent (orchestrator)
+│   │   └── yuval.md           ← Yuval — Creative Image Agent
 │   ├── skills/
 │   │   ├── obsidian-vault-workflow/   ← mandatory session protocol
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
 │   │   ├── obsidian-bases/            ← Obsidian Bases (.base files)
-│   │   └── skill-creator/             ← build, test & optimize new skills
-│   └── settings.json          ← permissions & hooks
+│   │   ├── skill-creator/             ← build, test & optimize new skills
+│   │   └── nano-banana-2/             ← image generation via Google Nano Banana 2 MCP
+│   └── settings.json          ← permissions, hooks & MCP servers
+├── reference/                 ← reference images for style analysis (input to Yuval)
+├── outputs/                   ← generated images (output from Yuval)
 ├── vault/                     ← long-term memory (Obsidian)
 │   ├── Files/                 ← documentation per project file
 │   └── Meeting Notes/         ← session logs & decisions
@@ -46,7 +52,15 @@ Sub-agents will be registered in the CEO agent's Sub-Agent Registry table as the
 
 | Agent | File | Specialty |
 |-------|------|-----------|
-| *(to be added)* | — | — |
+| Yuval | `.claude/agents/yuval.md` | Image generation with style consistency |
+
+### MCP Servers
+
+| Server | Purpose | Config key |
+|--------|---------|------------|
+| nano-banana-2 | Google Nano Banana 2 image generation | `mcpServers.nano-banana-2` in settings.json |
+
+> **Action required:** Replace `YOUR_API_KEY_HERE` in `.claude/settings.json` with a real API key, and verify the MCP package name `@google/nano-banana-mcp` once the model is officially available.
 
 ## Commands
 
