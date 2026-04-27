@@ -23,8 +23,8 @@
       "command": "npx",
       "args": ["-y", "@google/nano-banana-mcp"],
       "env": {
-        "GOOGLE_API_KEY": "YOUR_API_KEY_HERE",
-        "MODEL_ID": "nano-banana-2"
+        "GOOGLE_API_KEY": "${GOOGLE_API_KEY}",
+        "MODEL_ID": "${MODEL_ID}"
       }
     }
   }
