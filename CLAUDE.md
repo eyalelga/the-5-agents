@@ -31,8 +31,8 @@ the 5 agents/
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
 │   │   ├── obsidian-bases/            ← Obsidian Bases (.base files)
 │   │   ├── skill-creator/             ← build, test & optimize new skills
-│   │   ├── nano-banana-2/             ← image generation via Google Nano Banana 2 MCP
-│   │   └── superpowers/               ← 14 development methodology skills (TDD, planning, debugging...)
+│   │   ├── nano-banana-2/             ← image generation via Gemini 2.5 Flash MCP
+│   │   └── superpowers/               ← 14 methodology skills (TDD, planning, debugging...)
 │   └── settings.json          ← permissions, hooks & MCP servers
 ├── Content/                   ← raw articles waiting for Yael to rewrite
 │   └── Ready/                 ← originals archived after Yael processes them
@@ -47,27 +47,39 @@ the 5 agents/
 
 ### CEO Agent — Eyal
 
-The primary orchestrator. **Always invoked first** for any task. Analyzes requests, decomposes into sub-tasks, delegates to specialized agents, and synthesizes results. Defined at `.claude/agents/ceo_agent.md`.
+The primary orchestrator. **Always invoked first** for any task. Analyzes requests, decomposes into sub-tasks, delegates to specialized agents, and synthesizes results. Defined at [`.claude/agents/ceo_agent.md`](.claude/agents/ceo_agent.md).
 
-Sub-agents will be registered in the CEO agent's Sub-Agent Registry table as they are created.
+Reads the user's global profile before tasks to tailor output:
+`C:/Users/User/.claude/profile/` — personality, interests, code style.
 
 ### Sub-Agents
 
-| Agent | File | Specialty |
-|-------|------|-----------|
-| Yuval | `.claude/agents/yuval.md` | Image generation with style consistency |
-| Yael | `.claude/agents/yael.md` | Content rewriting — LLM-only, calls Yuval for images |
+| Agent | File | Specialty | Tools |
+|-------|------|-----------|-------|
+| Yuval | `.claude/agents/yuval.md` | Image generation — scans `reference/`, builds style-consistent prompts, generates via nano-banana-2, saves to `outputs/` | Read, Write, Glob, Bash |
+| Yael | `.claude/agents/yael.md` | Content writing — rewrites raw articles from `Content/` in project voice, calls Yuval for images, saves to `Output/`, archives originals to `Content/Ready/` | Read, Write, Glob, Task |
+
+### User Global Profile
+
+Located at `C:/Users/User/.claude/profile/` (outside the repo — global across all projects):
+
+| File | Content |
+|------|---------|
+| `personality.md` | אישיות, אופי, ערכים, קול |
+| `interests.md` | תחומי עניין, השראות, פרויקטים |
+| `code-style.md` | העדפות קוד, שפות, מה לא לעשות |
 
 ### MCP Servers
 
-| Server | Purpose | Config key |
-|--------|---------|------------|
-| nano-banana-2 | Google Nano Banana 2 image generation | `mcpServers.nano-banana-2` in settings.json |
+| Server | Purpose | Package |
+|--------|---------|---------|
+| nano-banana-2 | Gemini 2.5 Flash image generation | `nano-banana-mcp` |
 
-> **Note:** MCP is configured and active. Set `GEMINI_API_KEY` in `.env`.
+Requires `GEMINI_API_KEY` in `.env`.
 
 ## Commands
 
-- **Add an agent:** Create `.claude/agents/<name>.md` with frontmatter (`name`, `description`, `tools`) and a system prompt. Register it in the CEO agent's Sub-Agent Registry.
+- **Add an agent:** Create `.claude/agents/<name>.md` with frontmatter (`name`, `description`, `tools`) and a system prompt. Register it in the CEO agent's Sub-Agent Registry and in this file.
 - **Update vault:** Follow `obsidian-vault-workflow` — append to `vault/Meeting Notes/<topic>.md`.
+- **Update profile:** Edit files in `C:/Users/User/.claude/profile/` directly.
 - **Push changes:** `git add` → `git commit` → `git push` (permitted in settings.json).
