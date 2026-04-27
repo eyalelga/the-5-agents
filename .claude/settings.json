@@ -3,28 +3,18 @@
     "allow": [
       "Bash(git push *)",
       "Bash(git commit -m ' *)",
-      "Bash(touch \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/.claude/agents/.gitkeep\")",
-      "Bash(touch \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/.claude/skills/.gitkeep\")",
+      "Bash(npx nano-banana-mcp *)",
       "Read(//c/Users/User/.claude/**)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.github.com)",
-      "Bash(mkdir -p \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/reference\")",
-      "Bash(mkdir -p \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/outputs\")",
-      "Bash(touch \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/reference/.gitkeep\")",
-      "Bash(touch \"c:/Users/User/OneDrive/Desktop/workspace/the 5 agents/outputs/.gitkeep\")",
-      "Edit(/.claude/skills/nano-banana-2/**)"
-    ],
-    "additionalDirectories": [
-      "c:\\Users\\User\\OneDrive\\Desktop\\workspace\\the 5 agents\\.claude\\skills"
+      "WebFetch(domain:api.github.com)"
     ]
   },
   "mcpServers": {
     "nano-banana-2": {
       "command": "npx",
-      "args": ["-y", "@google/nano-banana-mcp"],
+      "args": ["nano-banana-mcp"],
       "env": {
-        "GOOGLE_API_KEY": "${GOOGLE_API_KEY}",
-        "MODEL_ID": "${MODEL_ID}"
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
       }
     }
   }

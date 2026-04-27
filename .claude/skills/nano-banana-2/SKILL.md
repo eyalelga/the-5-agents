@@ -1,65 +1,54 @@
 ---
 name: nano-banana-2
-description: Generate images using the Google Nano Banana 2 model via MCP. Use when the user asks to create, generate, or produce an image, or when an agent needs to invoke image generation. Sends a text prompt to the model and returns the generated image.
+description: Generate images using Google Nano Banana 2 (Gemini 2.5 Flash Image API) via MCP. Use when the user asks to create, generate, or produce an image, or when an agent needs to invoke image generation.
 ---
 
 # Nano Banana 2 — Image Generation Skill
 
-Generates images by sending prompts to the Google Nano Banana 2 model through the `nano-banana-2` MCP server.
-
-## Prerequisites
-
-The `nano-banana-2` MCP server must be configured in `.claude/settings.json` (see below). The server handles authentication and communication with the model endpoint.
+Generates images via the `nano-banana-2` MCP server, powered by Google Gemini 2.5 Flash Image API.
 
 ## How to Use
 
-### Basic call
-
-Invoke the MCP tool with a prompt:
+### Generate an image
 
 ```
 mcp__nano-banana-2__generate_image(
-  prompt: "<your image prompt>",
-  output_path: "outputs/<filename>.png"
+  prompt: "<your image prompt>"
 )
 ```
 
-### Parameters
+The server saves the image automatically and returns the file path.
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `prompt` | string | yes | Text description of the image to generate |
-| `output_path` | string | yes | Where to save the resulting image |
-| `width` | number | no | Image width in pixels (default: 1024) |
-| `height` | number | no | Image height in pixels (default: 1024) |
-| `style` | string | no | Style hint passed to the model |
+### Edit an existing image
 
-### Workflow
+```
+mcp__nano-banana-2__edit_image(
+  image_path: "outputs/<filename>.png",
+  prompt: "<edit instructions>"
+)
+```
 
-1. Receive the prompt (already crafted by the calling agent)
-2. Call `mcp__nano-banana-2__generate_image` with the prompt and output path
-3. Verify the file was written to `output_path`
-4. Return the path of the saved image to the caller
+### Available tools
 
-### Error handling
+| Tool | Description |
+|------|-------------|
+| `mcp__nano-banana-2__generate_image` | Generate a new image from a text prompt |
+| `mcp__nano-banana-2__edit_image` | Edit an existing image with a prompt |
+| `mcp__nano-banana-2__continue_editing` | Refine the last generated/edited image |
+| `mcp__nano-banana-2__get_last_image_info` | Get metadata about the last image |
 
-- If the MCP server is unreachable → report the connection error and stop
-- If the model returns an error → report the model error verbatim and stop
-- If the output file is not created → report that the image was not saved
-
-## MCP Server Configuration
-
-The following must be present in `.claude/settings.json` under `mcpServers`:
+## MCP Server Configuration (settings.json)
 
 ```json
-"nano-banana-2": {
-  "command": "npx",
-  "args": ["-y", "@google/nano-banana-mcp"],
-  "env": {
-    "GOOGLE_API_KEY": "<your-api-key>",
-    "MODEL_ID": "nano-banana-2"
+"mcpServers": {
+  "nano-banana-2": {
+    "command": "npx",
+    "args": ["nano-banana-mcp"],
+    "env": {
+      "GEMINI_API_KEY": "${GEMINI_API_KEY}"
+    }
   }
 }
 ```
 
-> **Note:** Replace `@google/nano-banana-mcp` and the env vars with the actual MCP package and credentials once confirmed.
+Requires `GEMINI_API_KEY` in `.env` (obtain from Google AI Studio).

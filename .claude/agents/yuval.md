@@ -59,10 +59,11 @@ outputs/<descriptive-name>.png
 Invoke the nano-banana-2 skill:
 ```
 mcp__nano-banana-2__generate_image(
-  prompt: "<crafted prompt>",
-  output_path: "outputs/<filename>.png"
+  prompt: "<crafted prompt>"
 )
 ```
+
+The MCP server saves the image automatically and returns the path. Move or copy the file to `outputs/<filename>.png` if needed.
 
 ### Step 5 — Confirm and report
 
