@@ -27,7 +27,8 @@ the 5 agents/
 │   ├── skills/
 │   │   ├── obsidian-vault-workflow/   ← mandatory session protocol
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
-│   │   └── obsidian-bases/            ← Obsidian Bases (.base files)
+│   │   ├── obsidian-bases/            ← Obsidian Bases (.base files)
+│   │   └── skill-creator/             ← build, test & optimize new skills
 │   └── settings.json          ← permissions & hooks
 ├── vault/                     ← long-term memory (Obsidian)
 │   ├── Files/                 ← documentation per project file
