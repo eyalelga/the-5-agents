@@ -6,13 +6,16 @@
       "Bash(npx nano-banana-mcp *)",
       "Read(//c/Users/User/.claude/**)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "WebFetch(domain:api.github.com)"
+      "WebFetch(domain:api.github.com)",
+      "Bash(node -e ' *)"
     ]
   },
   "mcpServers": {
     "nano-banana-2": {
       "command": "npx",
-      "args": ["nano-banana-mcp"],
+      "args": [
+        "nano-banana-mcp"
+      ],
       "env": {
         "GEMINI_API_KEY": "${GEMINI_API_KEY}"
       }

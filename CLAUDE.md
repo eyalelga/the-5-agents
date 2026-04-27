@@ -15,7 +15,7 @@ The vault at `vault/` is the long-term memory of this project. Skipping this pro
 
 ## Project Overview
 
-"The 5 Agents" — מערכת רב-סוכנים המבוססת על Claude Code. סוכן ראשי בשם **Eyal** (CEO) מנהל ומתאם עד 4 סוכנים מתמחים. הפרויקט משתמש ב-Obsidian כ-vault לזיכרון ארוך-טווח.
+"The 5 Agents" — מערכת רב-סוכנים המבוססת על Claude Code. סוכן ראשי בשם **Reuven** (CEO) מנהל ומתאם 4 סוכנים מתמחים: חן, יובל, יעל, וגיא. הפרויקט משתמש ב-Obsidian כ-vault לזיכרון ארוך-טווח.
 
 ## Architecture
 
@@ -23,9 +23,11 @@ The vault at `vault/` is the long-term memory of this project. Skipping this pro
 the 5 agents/
 ├── .claude/
 │   ├── agents/
-│   │   ├── ceo_agent.md       ← Eyal — CEO Master Agent (orchestrator)
+│   │   ├── ceo_agent.md       ← Reuven — CEO Master Agent (orchestrator)
+│   │   ├── chen.md            ← Chen — Web Researcher
 │   │   ├── yuval.md           ← Yuval — Creative Image Agent
-│   │   └── yael.md            ← Yael — Content Writer (LLM-only)
+│   │   ├── yael.md            ← Yael — Content Writer (LLM-only)
+│   │   └── guy.md             ← Guy — QA Agent (final gatekeeper)
 │   ├── skills/
 │   │   ├── obsidian-vault-workflow/   ← mandatory session protocol
 │   │   ├── obsidian-markdown/         ← Obsidian MD syntax guide
@@ -34,7 +36,12 @@ the 5 agents/
 │   │   ├── nano-banana-2/             ← image generation via Gemini 2.5 Flash MCP
 │   │   └── superpowers/               ← 14 methodology skills (TDD, planning, debugging...)
 │   └── settings.json          ← permissions, hooks & MCP servers
-├── Content/                   ← raw articles waiting for Yael to rewrite
+├── chen/
+│   └── Memory/
+│       └── searches.md        ← Chen's personal search log (deduplication + history)
+├── guy/
+│   └── QA_Reports/            ← Guy's QA report archive (one file per article per round)
+├── Content/                   ← raw articles waiting for Yael to rewrite (Chen saves here)
 │   └── Ready/                 ← originals archived after Yael processes them
 ├── Output/                    ← Yael's finished rewritten articles
 ├── reference/                 ← reference images for style analysis (input to Yuval)
@@ -45,7 +52,7 @@ the 5 agents/
 └── CLAUDE.md                  ← this file (always keep updated)
 ```
 
-### CEO Agent — Eyal
+### CEO Agent — Reuven
 
 The primary orchestrator. **Always invoked first** for any task. Analyzes requests, decomposes into sub-tasks, delegates to specialized agents, and synthesizes results. Defined at [`.claude/agents/ceo_agent.md`](.claude/agents/ceo_agent.md).
 
@@ -56,8 +63,10 @@ Reads the user's global profile before tasks to tailor output:
 
 | Agent | File | Specialty | Tools |
 |-------|------|-----------|-------|
+| Chen | `.claude/agents/chen.md` | Web research — searches internet for articles on request from Reuven, saves raw content + source URL to `Content/`, logs to `chen/Memory/searches.md` | WebSearch, WebFetch, Read, Write, Glob |
 | Yuval | `.claude/agents/yuval.md` | Image generation — scans `reference/`, builds style-consistent prompts, generates via nano-banana-2, saves to `outputs/` | Read, Write, Glob, Bash |
 | Yael | `.claude/agents/yael.md` | Content writing — rewrites raw articles from `Content/` in project voice, calls Yuval for images, saves to `Output/`, archives originals to `Content/Ready/` | Read, Write, Glob, Task |
+| Guy | `.claude/agents/guy.md` | QA — final gatekeeper. Receives Yael's `Output/` article + original brief, runs 10-point checklist, saves report to `guy/QA_Reports/`, returns ✅ Approved or ❌ Requires Fix. Max 3 rounds. | Read, Write, Glob |
 
 ### User Global Profile
 
