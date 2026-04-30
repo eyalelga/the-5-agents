@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>GEFFEN AI AGENCIES — שכבת האינטליגנציה לארגונים גלובליים</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: { extend: { colors: { gold: '#D4AF37', 'gold-light': '#E8CC6A', charcoal: '#1A1A1A', deep: '#0D0D0D' } } }
+    };
+  </script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root { --gold: #D4AF37; --gold-glow: rgba(212,175,55,0.25); --deep: #0D0D0D; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--deep); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInRtl {
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulseGold {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 1; }
+    }
+    @keyframes flowLine {
+      0%   { stroke-dashoffset: 600; opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 0.6; }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50%       { transform: scale(1.06); }
+    }
+
+    /* Hero */
+    .hero-bg {
+      background-image: url('../outputs/geffen-hero.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* Glass */
+    .glass {
+      background: rgba(13,13,13,0.82);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(212,175,55,0.12);
+    }
+
+    /* Transformation card */
+    .t-card {
+      width: 100%;
+      padding: 28px 22px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(26,26,26,0.7);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, background 0.3s, transform 0.25s, box-shadow 0.3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .t-card:hover, .t-card.active {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(212,175,55,0.14);
+    }
+    .t-card.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to left, transparent, var(--gold), transparent);
+    }
+
+    /* Buttons */
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: #0D0D0D;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 15px 32px;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-gold:hover { background: #E8CC6A; box-shadow: 0 0 28px rgba(212,175,55,0.38); transform: translateY(-2px); }
+    .btn-ghost {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 15px 32px;
+      border-radius: 2px;
+      border: 1px solid var(--gold);
+      text-decoration: none;
+      background: transparent;
+      transition: background 0.3s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-ghost:hover { background: rgba(212,175,55,0.08); }
+
+    /* Form */
+    .f-input {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.2);
+      color: #fff;
+      font-size: 16px; /* prevents iOS zoom on focus */
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.3s;
+      -webkit-appearance: none;
+    }
+    .f-input:focus { border-color: var(--gold); }
+    .f-input::placeholder { color: rgba(255,255,255,0.28); }
+
+    .roadmap-section { animation: fadeInUp 0.5s ease-out forwards; }
+    .step-item { opacity: 0; animation: slideInRtl 0.55s ease-out forwards; }
+
+    .nav-link {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1px;
+      transition: color 0.25s;
+    }
+    .nav-link:hover { color: var(--gold); }
+
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* Section padding */
+    .section-pad { padding: 72px 56px; }
+
+    /* Hamburger */
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 8px; background: none; border: none; -webkit-tap-highlight-color: transparent; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--gold); border-radius: 1px; transition: all 0.3s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile menu */
+    .mobile-menu {
+      display: none;
+      animation: slideDown 0.3s ease-out;
+    }
+    .mobile-menu.open { display: flex; flex-direction: column; }
+
+    /* Floating WhatsApp */
+    .whatsapp-fab {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 999;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+      text-decoration: none;
+      animation: pulse 2.5s ease-in-out infinite;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .whatsapp-fab:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(37,211,102,0.55); animation: none; }
+
+    /* ─────────────────────────────
+       MOBILE OVERRIDES
+    ───────────────────────────── */
+    @media (max-width: 768px) {
+      /* Nav */
+      .desktop-nav-links { display: none !important; }
+      .hamburger { display: flex !important; }
+
+      /* Section padding */
+      .section-pad { padding: 56px 18px !important; }
+
+      /* Hero */
+      .hero-content { padding: 60px 18px 80px !important; }
+      .hero-headline { font-size: 28px !important; line-height: 1.3 !important; }
+      .hero-sub { font-size: 15px !important; }
+      .hero-btns { flex-direction: column !important; align-items: stretch !important; }
+      .hero-btns a { text-align: center; }
+
+      /* Stats */
+      .stats-row { gap: 28px !important; flex-wrap: wrap; justify-content: center; }
+      .stats-row > div { min-width: 80px; }
+
+      /* Cards container */
+      .cards-container { flex-direction: column !important; }
+
+      /* Roadmap */
+      .roadmap-pad { padding: 0 18px 72px !important; }
+      .roadmap-inner { padding: 32px 20px !important; }
+      .roadmap-header { flex-direction: column !important; align-items: flex-start !important; gap: 10px !important; }
+      .steps-container { flex-direction: column !important; }
+      .step-arrow { transform: rotate(-90deg); margin: 4px auto !important; }
+
+      /* Contact */
+      .contact-pad { padding: 64px 18px !important; }
+      .form-grid-2 { grid-template-columns: 1fr !important; }
+
+      /* Footer */
+      .footer-pad { padding: 44px 18px !important; }
+      .footer-inner { flex-direction: column !important; align-items: flex-start !important; gap: 32px !important; }
+      .footer-bottom { flex-direction: column !important; gap: 8px !important; }
+
+      /* Buttons */
+      .btn-gold, .btn-ghost { padding: 16px 24px; font-size: 14px; }
+
+      /* Neural net — simplified on mobile for performance */
+      .neural-net { opacity: 0.15 !important; }
+
+      /* Nav padding */
+      .nav-bar { padding: 16px 18px !important; }
+    }
+
+    @media (max-width: 480px) {
+      .hero-headline { font-size: 24px !important; }
+      .stats-number { font-size: 30px !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+    const GOLD = '#D4AF37';
+
+    const TRANSFORMATIONS = [
+      {
+        id: 'efficiency',
+        label: 'התייעלות וחיסכון בעלויות',
+        target: 'Operations / COOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width:28,height:28}}>
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'מיפוי צווארי בקבוק', desc: 'אנליזה מעמיקה של תהליכים בזבזניים ונקודות הכאב התפעוליות' },
+          { num: '02', title: 'הטמעת סוכני AI',    desc: 'פריסת אוטומציה חכמה בממשקי העבודה הקריטיים' },
+          { num: '03', title: 'מדידת ROI תפעולי',  desc: 'דאשבורד בקרה בזמן אמת עם KPIs ברורים ומדידים' }
+        ]
+      },
+      {
+        id: 'strategy',
+        label: 'תמיכה בהחלטות אסטרטגיות',
+        target: 'Data / CEOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width:28,height:28}}>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'חיבור Legacy Data',        desc: 'שחרור נתונים כלואים ממערכות SAP, Oracle וסביבות ישנות' },
+          { num: '02', title: 'ניתוח AI עמוק',            desc: 'מנועי BI חכמים המייצרים תובנות על גבי הנתונים הקיימים' },
+          { num: '03', title: 'דאשבורד החלטות בזמן אמת', desc: 'תובנות אסטרטגיות ישירות לשולחן ההנהלה' }
+        ]
+      },
+      {
+        id: 'modernization',
+        label: 'מודרניזציה דיגיטלית',
+        target: 'Legacy / CTOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{width:28,height:28}}>
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'עטיפת מערכות קיימות', desc: 'API חכם שמשמר את ליבת המערכת ללא שיבוש פעילות שוטפת' },
+          { num: '02', title: 'הנגשת API חכם',       desc: 'ממשק עכשווי המאפשר שילוב עם כלי SaaS ו-AI' },
+          { num: '03', title: 'אינטגרציית AI מלאה', desc: 'שילוב AI-native בכל שכבות הפלטפורמה הקיימת' }
+        ]
+      }
+    ];
+
+    /* Neural Network SVG */
+    function NeuralNetwork() {
+      const lines = [
+        [120,180,420,320],[420,320,720,130],[720,130,1020,280],
+        [220,480,520,380],[520,380,820,520],[820,520,1100,380],
+        [420,320,520,380],[720,130,820,520],[120,180,220,480],
+        [1020,280,1100,380],[320,280,620,220],[620,220,920,420]
+      ];
+      const nodes = [
+        [120,180],[420,320],[720,130],[1020,280],
+        [220,480],[520,380],[820,520],[1100,380],
+        [320,280],[620,220],[920,420]
+      ];
+      return (
+        <svg className="neural-net"
+          style={{position:'absolute',top:0,left:0,width:'100%',height:'100%',opacity:0.28,pointerEvents:'none'}}
+          viewBox="0 0 1200 680" preserveAspectRatio="xMidYMid slice">
+          {lines.map(([x1,y1,x2,y2],i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke={GOLD} strokeWidth="0.9" strokeDasharray="600"
+              style={{animation:`flowLine ${3.5+i*0.25}s ease-in-out ${i*0.18}s infinite`}}
+            />
+          ))}
+          {nodes.map(([cx,cy],i) => (
+            <circle key={i} cx={cx} cy={cy} r={i%3===0?4.5:2.5} fill={GOLD}
+              style={{animation:`pulseGold ${2+i*0.28}s ease-in-out ${i*0.12}s infinite`}}
+            />
+          ))}
+        </svg>
+      );
+    }
+
+    /* Nav */
+    function Nav() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <nav className="glass nav-bar" style={{position:'relative',zIndex:20,padding:'18px 56px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+            <div style={{fontFamily:"'Playfair Display', serif",fontSize:20,fontWeight:700,letterSpacing:4,color:GOLD}}>
+              GEFFEN AI
+            </div>
+
+            {/* Desktop links */}
+            <div className="desktop-nav-links" style={{display:'flex',gap:32}}>
+              <a href="#transform" className="nav-link">שירותים</a>
+              <a href="#contact"   className="nav-link">אבחון אסטרטגי</a>
+            </div>
+
+            {/* Hamburger */}
+            <button className={`hamburger ${open ? 'open' : ''}`} onClick={() => setOpen(!open)} aria-label="תפריט">
+              <span/><span/><span/>
+            </button>
+          </nav>
+
+          {/* Mobile dropdown menu */}
+          <div className={`mobile-menu glass ${open ? 'open' : ''}`}
+            style={{position:'relative',zIndex:19,borderTop:'1px solid rgba(212,175,55,0.08)'}}>
+            <a href="#transform" className="nav-link"
+              style={{padding:'18px 24px',borderBottom:'1px solid rgba(255,255,255,0.04)',fontSize:15}}
+              onClick={() => setOpen(false)}>
+              ⚡ שירותים
+            </a>
+            <a href="#contact" className="nav-link"
+              style={{padding:'18px 24px',fontSize:15}}
+              onClick={() => setOpen(false)}>
+              📋 אבחון אסטרטגי
+            </a>
+            <a href="https://wa.me/+972509697149?text=שלום,%20אני%20מעוניין%20באבחון%20אסטרטגי%20עם%20Geffen%20AI"
+              style={{padding:'18px 24px',fontSize:15,color:'#25D366',textDecoration:'none',display:'block',borderTop:'1px solid rgba(255,255,255,0.04)'}}
+              target="_blank" rel="noreferrer">
+              💬 WhatsApp ישיר
+            </a>
+          </div>
+        </>
+      );
+    }
+
+    /* Hero */
+    function HeroSection() {
+      return (
+        <section className="hero-bg" style={{position:'relative',minHeight:'100vh',display:'flex',flexDirection:'column',overflow:'hidden'}}>
+          <NeuralNetwork />
+          <Nav />
+
+          <div className="hero-content" style={{flex:1,display:'flex',alignItems:'center',justifyContent:'center',padding:'80px 56px',position:'relative',zIndex:10}}>
+            <div style={{maxWidth:880,textAlign:'center',width:'100%'}}>
+              <div className="section-label" style={{marginBottom:24}}>
+                GEFFEN GLOBAL &nbsp;·&nbsp; AI AGENCIES
+              </div>
+
+              <h1 className="hero-headline" style={{
+                fontFamily:"'Playfair Display', serif",
+                fontSize:'clamp(26px,4.8vw,64px)',
+                fontWeight:700,lineHeight:1.25,color:'#fff',marginBottom:28,
+                animation:'fadeInUp 0.85s ease-out forwards'
+              }}>
+                <span style={{color:GOLD}}>GEFFEN AI:</span> שכבת האינטליגנציה<br/>לארגונים גלובליים
+              </h1>
+
+              <p className="hero-sub" style={{
+                fontSize:'clamp(14px,1.8vw,18px)',color:'rgba(255,255,255,0.6)',
+                lineHeight:1.85,maxWidth:640,margin:'0 auto 36px',
+                animation:'fadeInUp 0.85s 0.2s ease-out both'
+              }}>
+                רתימת 20 שנות ניסיון בתשתיות ומערכות מידע להטמעת בינה מלאכותית אסטרטגית.<br/>
+                הופכים מורכבות Legacy לרווח תפעולי.
+              </p>
+
+              <div className="hero-btns" style={{display:'flex',gap:14,justifyContent:'center',flexWrap:'wrap',animation:'fadeInUp 0.85s 0.35s ease-out both'}}>
+                <a href="#transform" className="btn-gold">גלה את הפתרון שלך ↓</a>
+                <a href="#contact"   className="btn-ghost">אבחון אסטרטגי</a>
+              </div>
+
+              <div className="stats-row" style={{marginTop:64,display:'flex',justifyContent:'center',gap:56,flexWrap:'wrap'}}>
+                {[['20+','שנות ניסיון'],['200+','פרויקטים'],['98%','שביעות רצון']].map(([n,l]) => (
+                  <div key={l} style={{textAlign:'center'}}>
+                    <div className="stats-number" style={{fontFamily:"'Playfair Display', serif",fontSize:36,fontWeight:700,color:GOLD,lineHeight:1}}>{n}</div>
+                    <div style={{fontSize:10,color:'rgba(255,255,255,0.35)',letterSpacing:2,marginTop:5}}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div style={{position:'absolute',bottom:0,left:0,right:0,height:100,background:'linear-gradient(transparent,#0D0D0D)',pointerEvents:'none'}}/>
+        </section>
+      );
+    }
+
+    /* Transformation Card */
+    function TCard({ item, isActive, onClick }) {
+      return (
+        <div className={`t-card ${isActive ? 'active' : ''}`} onClick={onClick}
+          style={{marginBottom:0}}>
+          <div style={{display:'flex',alignItems:'center',gap:14,marginBottom:16}}>
+            <div style={{color:isActive ? GOLD : 'rgba(255,255,255,0.38)',transition:'color 0.3s',flexShrink:0}}>
+              {item.icon}
+            </div>
+            <div>
+              <h3 style={{fontSize:16,fontWeight:600,lineHeight:1.4,color:isActive?'#fff':'rgba(255,255,255,0.78)'}}>
+                {item.label}
+              </h3>
+              <p style={{fontSize:11,letterSpacing:1,color:isActive?GOLD:'rgba(255,255,255,0.3)',marginTop:3}}>
+                {item.target}
+              </p>
+            </div>
+          </div>
+          {isActive && (
+            <div style={{fontSize:12,color:GOLD,borderTop:'1px solid rgba(212,175,55,0.15)',paddingTop:10,marginTop:4}}>
+              ← לחץ שנית לסגירה
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    /* Transformation Selector */
+    function TransformationSelector({ selected, onSelect }) {
+      return (
+        <section id="transform" className="section-pad" style={{maxWidth:1200,margin:'0 auto'}}>
+          <div style={{textAlign:'center',marginBottom:48}}>
+            <div className="section-label">DIAGNOSTIC FRAMEWORK</div>
+            <h2 style={{fontFamily:"'Playfair Display', serif",fontSize:'clamp(24px,3vw,44px)',fontWeight:700,color:'#fff',marginBottom:12}}>
+              היכן מתחילים את הטרנספורמציה?
+            </h2>
+            <p style={{color:'rgba(255,255,255,0.38)',fontSize:14,lineHeight:1.7}}>
+              בחר את האתגר המרכזי שלך — קבל מפת דרכים מותאמת אישית
+            </p>
+          </div>
+
+          <div className="cards-container" style={{display:'flex',gap:16,flexDirection:'row'}}>
+            {TRANSFORMATIONS.map(item => (
+              <TCard key={item.id} item={item}
+                isActive={selected === item.id}
+                onClick={() => onSelect(selected === item.id ? null : item.id)}
+              />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    /* Dynamic Roadmap */
+    function DynamicRoadmap({ transformation }) {
+      return (
+        <section className="roadmap-section roadmap-pad" style={{padding:'0 56px 88px',maxWidth:1200,margin:'0 auto'}}>
+          <div className="glass roadmap-inner" style={{borderRadius:6,padding:'44px 40px'}}>
+            <div className="roadmap-header" style={{display:'flex',alignItems:'center',gap:14,marginBottom:36,flexWrap:'wrap'}}>
+              <div style={{color:GOLD}}>{transformation.icon}</div>
+              <div>
+                <div className="section-label" style={{marginBottom:3}}>YOUR ROADMAP</div>
+                <h3 style={{fontFamily:"'Playfair Display', serif",fontSize:'clamp(20px,2.5vw,26px)',color:'#fff',fontWeight:600}}>
+                  {transformation.label}
+                </h3>
+              </div>
+            </div>
+
+            <div className="steps-container" style={{display:'flex',gap:16,alignItems:'flex-start'}}>
+              {transformation.roadmap.map((step,i) => (
+                <React.Fragment key={step.num}>
+                  <div className="step-item" style={{flex:1,minWidth:0,animationDelay:`${i*0.14}s`}}>
+                    <div style={{fontSize:10,letterSpacing:5,color:GOLD,fontWeight:700,marginBottom:12}}>{step.num}</div>
+                    <div style={{width:32,height:1.5,background:GOLD,marginBottom:14}}/>
+                    <h4 style={{fontSize:15,fontWeight:600,color:'#fff',marginBottom:8,lineHeight:1.4}}>{step.title}</h4>
+                    <p style={{fontSize:13,color:'rgba(255,255,255,0.48)',lineHeight:1.75}}>{step.desc}</p>
+                  </div>
+                  {i < transformation.roadmap.length - 1 && (
+                    <div className="step-arrow" style={{paddingTop:16,color:'rgba(212,175,55,0.28)',fontSize:20,userSelect:'none',flexShrink:0}}>←</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            <div style={{marginTop:36,paddingTop:24,borderTop:'1px solid rgba(212,175,55,0.1)',textAlign:'center'}}>
+              <a href="#contact" className="btn-gold" style={{display:'inline-block',width:'auto'}}>
+                תיאום אבחון אסטרטגי ←
+              </a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* Contact */
+    function ContactSection() {
+      const [form, setForm] = useState({name:'',company:'',role:'',phone:'',email:'',challenge:''});
+      const [sent, setSent] = useState(false);
+      const set = k => e => setForm({...form, [k]: e.target.value});
+
+      return (
+        <section id="contact" className="contact-pad" style={{
+          background:'linear-gradient(to bottom,#0D0D0D,#111)',
+          padding:'88px 56px',
+          borderTop:'1px solid rgba(212,175,55,0.1)'
+        }}>
+          <div style={{maxWidth:720,margin:'0 auto'}}>
+            <div style={{textAlign:'center',marginBottom:48}}>
+              <div className="section-label">STRATEGIC CONSULTATION</div>
+              <h2 style={{fontFamily:"'Playfair Display', serif",fontSize:'clamp(24px,3vw,44px)',fontWeight:700,color:'#fff',marginBottom:12}}>
+                תיאום אבחון אסטרטגי בכיר
+              </h2>
+              <p style={{color:'rgba(255,255,255,0.4)',fontSize:14,lineHeight:1.75}}>
+                מפגש ראשוני ללא עלות — ניתוח מצב, זיהוי הזדמנויות, הגדרת מסלול מותאם
+              </p>
+            </div>
+
+            {/* WhatsApp shortcut — prominent on mobile */}
+            <a href="https://wa.me/+972509697149?text=שלום,%20אני%20מעוניין%20באבחון%20אסטרטגי%20עם%20Geffen%20AI"
+              target="_blank" rel="noreferrer"
+              style={{
+                display:'flex',alignItems:'center',justifyContent:'center',gap:10,
+                background:'#25D366',color:'#fff',fontWeight:600,fontSize:15,
+                padding:'16px 24px',borderRadius:4,textDecoration:'none',
+                marginBottom:28,boxShadow:'0 4px 18px rgba(37,211,102,0.3)',
+                transition:'transform 0.2s,box-shadow 0.2s'
+              }}>
+              <svg viewBox="0 0 24 24" fill="currentColor" style={{width:22,height:22}}>
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L.057 23.882l6.206-1.629A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 0 1-5.001-1.369l-.36-.213-3.723.977.995-3.633-.234-.374A9.775 9.775 0 0 1 2.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/>
+              </svg>
+              שלח הודעה ב-WhatsApp עכשיו
+            </a>
+
+            {sent ? (
+              <div style={{textAlign:'center',padding:'52px 32px',border:`1px solid ${GOLD}`,borderRadius:4}}>
+                <div style={{fontSize:40,marginBottom:16,color:GOLD}}>✓</div>
+                <h3 style={{fontFamily:"'Playfair Display', serif",fontSize:26,color:GOLD,marginBottom:10}}>תודה על פנייתך</h3>
+                <p style={{color:'rgba(255,255,255,0.45)',lineHeight:1.7}}>נחזור אליך תוך 24 שעות לתיאום הפגישה</p>
+              </div>
+            ) : (
+              <form onSubmit={e => { e.preventDefault(); setSent(true); }}>
+                <div className="form-grid-2" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:16}}>
+                  <div>
+                    <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>שם מלא</label>
+                    <input className="f-input" type="text" required placeholder="ישראל ישראלי" value={form.name} onChange={set('name')}/>
+                  </div>
+                  <div>
+                    <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>חברה</label>
+                    <input className="f-input" type="text" required placeholder="שם החברה" value={form.company} onChange={set('company')}/>
+                  </div>
+                </div>
+
+                <div className="form-grid-2" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:16,marginBottom:16}}>
+                  <div>
+                    <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>תפקיד</label>
+                    <input className="f-input" type="text" placeholder="CEO / CTO / COO" value={form.role} onChange={set('role')}/>
+                  </div>
+                  <div>
+                    <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>טלפון</label>
+                    <input className="f-input" type="tel" placeholder="+972-50-0000000" dir="ltr" value={form.phone} onChange={set('phone')}/>
+                  </div>
+                </div>
+
+                <div style={{marginBottom:16}}>
+                  <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>אימייל</label>
+                  <input className="f-input" type="email" required placeholder="your@company.com" dir="ltr" value={form.email} onChange={set('email')}/>
+                </div>
+
+                <div style={{marginBottom:16}}>
+                  <label style={{display:'block',fontSize:10,letterSpacing:3,color:GOLD,marginBottom:7}}>מה האתגר העיקרי שלך?</label>
+                  <textarea className="f-input" rows={4}
+                    placeholder="תאר בקצרה את האתגר או ההזדמנות שאתה רואה..."
+                    value={form.challenge} onChange={set('challenge')} style={{resize:'vertical'}}
+                  />
+                </div>
+
+                <div style={{padding:'16px 18px',marginBottom:16,border:'1px dashed rgba(212,175,55,0.28)',borderRadius:3,textAlign:'center',fontSize:13,color:'rgba(255,255,255,0.38)'}}>
+                  תיאום ישיר:&nbsp;
+                  <a href="tel:+972509697149" style={{color:GOLD,textDecoration:'none'}} dir="ltr">050-969-7149</a>
+                  &nbsp;|&nbsp;
+                  <a href="tel:+972533945012" style={{color:GOLD,textDecoration:'none'}} dir="ltr">053-394-5012</a>
+                </div>
+
+                <button type="submit" className="btn-gold" style={{width:'100%',fontSize:15,padding:'18px'}}>
+                  שליחת בקשת אבחון ←
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    /* Footer */
+    function Footer() {
+      return (
+        <footer style={{background:'#080808',borderTop:'1px solid rgba(212,175,55,0.08)',padding:'44px 56px'}} className="footer-pad">
+          <div className="footer-inner" style={{maxWidth:1200,margin:'0 auto',display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:32}}>
+            <div>
+              <div style={{fontFamily:"'Playfair Display', serif",fontSize:18,fontWeight:700,letterSpacing:4,color:GOLD,marginBottom:10}}>GEFFEN AI</div>
+              <p style={{fontSize:12,color:'rgba(255,255,255,0.3)',maxWidth:240,lineHeight:1.7}}>
+                שכבת האינטליגנציה לארגונים גלובליים.<br/>הופכים מורכבות Legacy לרווח תפעולי.
+              </p>
+            </div>
+
+            <div>
+              <div style={{fontSize:10,letterSpacing:4,color:GOLD,marginBottom:12}}>יצירת קשר</div>
+              <div style={{display:'flex',flexDirection:'column',gap:9}}>
+                <a href="tel:+972509697149" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}} dir="ltr">+972-50-969-7149</a>
+                <a href="tel:+972533945012" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}} dir="ltr">+972-53-394-5012</a>
+                <a href="mailto:tomer.ganzi@gmail.com" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}}>tomer.ganzi@gmail.com</a>
+              </div>
+            </div>
+
+            <div>
+              <div style={{fontSize:10,letterSpacing:4,color:GOLD,marginBottom:12}}>רשתות חברתיות</div>
+              <div style={{display:'flex',flexDirection:'column',gap:9}}>
+                <a href="https://www.linkedin.com/company/geffen-global" target="_blank" rel="noreferrer" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}}>LinkedIn</a>
+                <a href="https://www.instagram.com/geffen_global/" target="_blank" rel="noreferrer" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}}>Instagram</a>
+                <a href="https://www.facebook.com/profile.php?id=61568066532847" target="_blank" rel="noreferrer" style={{color:'rgba(255,255,255,0.45)',textDecoration:'none',fontSize:13}}>Facebook</a>
+                <a href="https://wa.me/+972509697149" target="_blank" rel="noreferrer" style={{color:'#25D366',textDecoration:'none',fontSize:13}}>WhatsApp</a>
+              </div>
+            </div>
+          </div>
+
+          <div className="footer-bottom" style={{maxWidth:1200,margin:'24px auto 0',paddingTop:20,borderTop:'1px solid rgba(255,255,255,0.04)',display:'flex',justifyContent:'space-between',flexWrap:'wrap',gap:8}}>
+            <span style={{fontSize:11,color:'rgba(255,255,255,0.18)'}}>© 2025 Geffen Global. All rights reserved.</span>
+            <span style={{fontSize:11,color:'rgba(255,255,255,0.18)'}}>Powered by Geffen AI Agencies</span>
+          </div>
+        </footer>
+      );
+    }
+
+    /* Floating WhatsApp button */
+    function WhatsAppFab() {
+      return (
+        <a href="https://wa.me/+972509697149?text=שלום,%20אני%20מעוניין%20באבחון%20אסטרטגי%20עם%20Geffen%20AI"
+          className="whatsapp-fab" target="_blank" rel="noreferrer" aria-label="שלח הודעה WhatsApp">
+          <svg viewBox="0 0 24 24" fill="white" style={{width:30,height:30}}>
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+            <path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.528 5.847L.057 23.882l6.206-1.629A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.8 9.8 0 0 1-5.001-1.369l-.36-.213-3.723.977.995-3.633-.234-.374A9.775 9.775 0 0 1 2.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/>
+          </svg>
+        </a>
+      );
+    }
+
+    /* App */
+    function App() {
+      const [selected, setSelected] = useState(null);
+      const transformation = TRANSFORMATIONS.find(t => t.id === selected);
+
+      return (
+        <div style={{direction:'rtl'}}>
+          <HeroSection />
+          <TransformationSelector selected={selected} onSelect={setSelected} />
+          {transformation && <DynamicRoadmap key={selected} transformation={transformation} />}
+          <ContactSection />
+          <Footer />
+          <WhatsAppFab />
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
