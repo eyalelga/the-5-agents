@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GEFFEN AI AGENCIES — שכבת האינטליגנציה לארגונים גלובליים</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React 18 UMD -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+  <!-- Babel for JSX (standalone, no build step required) -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Fonts — Playfair Display for headings, Inter for body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind custom tokens -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            gold: '#D4AF37',
+            'gold-light': '#E8CC6A',
+            charcoal: '#1A1A1A',
+            deep: '#0D0D0D',
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --gold: #D4AF37;
+      --gold-glow: rgba(212,175,55,0.25);
+      --deep: #0D0D0D;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--deep); color: #fff; font-family: 'Inter', sans-serif; }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: var(--deep); }
+    ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+
+    /* ── Keyframes ── */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideInRtl {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes pulseGold {
+      0%, 100% { opacity: 0.35; }
+      50%       { opacity: 1; }
+    }
+    @keyframes flowLine {
+      0%   { stroke-dashoffset: 600; opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { stroke-dashoffset: 0; opacity: 0.6; }
+    }
+    @keyframes shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    /* ── Hero background — generated via Gemini 3.1 Flash Image — outputs/geffen-hero.png ── */
+    .hero-bg {
+      background-image: url('../outputs/geffen-hero.png');
+      background-size: cover;
+      background-position: center;
+    }
+
+    /* ── Glass card ── */
+    .glass {
+      background: rgba(13,13,13,0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(212,175,55,0.12);
+    }
+
+    /* ── Transformation cards ── */
+    .t-card {
+      flex: 1;
+      min-width: 220px;
+      padding: 36px 28px;
+      border: 1px solid rgba(212,175,55,0.18);
+      background: rgba(26,26,26,0.7);
+      border-radius: 4px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .t-card:hover, .t-card.active {
+      border-color: var(--gold);
+      background: rgba(212,175,55,0.05);
+      transform: translateY(-5px);
+      box-shadow: 0 24px 60px rgba(212,175,55,0.14);
+    }
+    .t-card.active::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to left, transparent, var(--gold), transparent);
+    }
+
+    /* ── Gold button ── */
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: #0D0D0D;
+      font-weight: 600;
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 15px 40px;
+      border-radius: 2px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+    }
+    .btn-gold:hover {
+      background: #E8CC6A;
+      box-shadow: 0 0 32px rgba(212,175,55,0.38);
+      transform: translateY(-2px);
+    }
+
+    /* ── Ghost button ── */
+    .btn-ghost {
+      display: inline-block;
+      color: var(--gold);
+      font-size: 13px;
+      letter-spacing: 2px;
+      padding: 15px 40px;
+      border-radius: 2px;
+      border: 1px solid var(--gold);
+      text-decoration: none;
+      background: transparent;
+      transition: background 0.3s ease;
+    }
+    .btn-ghost:hover { background: rgba(212,175,55,0.08); }
+
+    /* ── Form inputs ── */
+    .f-input {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212,175,55,0.2);
+      color: #fff;
+      font-size: 14px;
+      font-family: 'Inter', sans-serif;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+    .f-input:focus { border-color: var(--gold); }
+    .f-input::placeholder { color: rgba(255,255,255,0.28); }
+
+    /* ── Roadmap animations ── */
+    .roadmap-section { animation: fadeInUp 0.5s ease-out forwards; }
+    .step-item { opacity: 0; animation: slideInRtl 0.55s ease-out forwards; }
+
+    /* ── Nav link ── */
+    .nav-link {
+      color: rgba(255,255,255,0.55);
+      text-decoration: none;
+      font-size: 13px;
+      letter-spacing: 1px;
+      transition: color 0.25s ease;
+    }
+    .nav-link:hover { color: var(--gold); }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--gold);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .flex-row-responsive { flex-direction: column !important; }
+      .hero-headline { font-size: 32px !important; }
+      .stats-row { gap: 32px !important; }
+      .form-grid-2 { grid-template-columns: 1fr !important; }
+      .footer-inner { flex-direction: column !important; align-items: flex-start !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    const GOLD = '#D4AF37';
+
+    /* ── Data ── */
+    const TRANSFORMATIONS = [
+      {
+        id: 'efficiency',
+        label: 'התייעלות וחיסכון בעלויות',
+        target: 'Operations / COOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+            style={{width:30, height:30}}>
+            <path d="M13 10V3L4 14h7v7l9-11h-7z" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'מיפוי צווארי בקבוק', desc: 'אנליזה מעמיקה של תהליכים בזבזניים ונקודות הכאב התפעוליות' },
+          { num: '02', title: 'הטמעת סוכני AI',    desc: 'פריסת אוטומציה חכמה בממשקי העבודה הקריטיים' },
+          { num: '03', title: 'מדידת ROI תפעולי',  desc: 'דאשבורד בקרה בזמן אמת עם KPIs ברורים ומדידים' }
+        ]
+      },
+      {
+        id: 'strategy',
+        label: 'תמיכה בהחלטות אסטרטגיות',
+        target: 'Data / CEOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+            style={{width:30, height:30}}>
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'חיבור Legacy Data',           desc: 'שחרור נתונים כלואים ממערכות SAP, Oracle וסביבות ישנות' },
+          { num: '02', title: 'ניתוח AI עמוק',               desc: 'מנועי BI חכמים המייצרים תובנות על גבי הנתונים הקיימים' },
+          { num: '03', title: 'דאשבורד החלטות בזמן אמת',    desc: 'תובנות אסטרטגיות ישירות לשולחן ההנהלה' }
+        ]
+      },
+      {
+        id: 'modernization',
+        label: 'מודרניזציה דיגיטלית',
+        target: 'Legacy / CTOs',
+        icon: (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"
+            style={{width:30, height:30}}>
+            <polyline points="23 4 23 10 17 10"/>
+            <polyline points="1 20 1 14 7 14"/>
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+          </svg>
+        ),
+        roadmap: [
+          { num: '01', title: 'עטיפת מערכות קיימות (Wrapper)', desc: 'API חכם שמשמר את ליבת המערכת ללא שיבוש פעילות שוטפת' },
+          { num: '02', title: 'הנגשת API חכם',                  desc: 'ממשק עכשווי המאפשר שילוב עם כלי SaaS ו-AI' },
+          { num: '03', title: 'אינטגרציית AI מלאה',           desc: 'שילוב AI-native בכל שכבות הפלטפורמה הקיימת' }
+        ]
+      }
+    ];
+
+    /* ── Neural Network SVG (animated background) ── */
+    function NeuralNetwork() {
+      const lines = [
+        [120, 180, 420, 320], [420, 320, 720, 130], [720, 130, 1020, 280],
+        [220, 480, 520, 380], [520, 380, 820, 520], [820, 520, 1100, 380],
+        [420, 320, 520, 380], [720, 130, 820, 520], [120, 180, 220, 480],
+        [1020, 280, 1100, 380], [320, 280, 620, 220], [620, 220, 920, 420]
+      ];
+      const nodes = [
+        [120,180], [420,320], [720,130], [1020,280],
+        [220,480], [520,380], [820,520], [1100,380],
+        [320,280], [620,220], [920,420]
+      ];
+      return (
+        <svg
+          style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%', opacity:0.28, pointerEvents:'none' }}
+          viewBox="0 0 1200 680"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          {lines.map(([x1,y1,x2,y2], i) => (
+            <line key={i} x1={x1} y1={y1} x2={x2} y2={y2}
+              stroke={GOLD} strokeWidth="0.9"
+              strokeDasharray="600"
+              style={{ animation: `flowLine ${3.5 + i * 0.25}s ease-in-out ${i * 0.18}s infinite` }}
+            />
+          ))}
+          {nodes.map(([cx,cy], i) => (
+            <circle key={i} cx={cx} cy={cy} r={i % 3 === 0 ? 4.5 : 2.5}
+              fill={GOLD}
+              style={{ animation: `pulseGold ${2 + i * 0.28}s ease-in-out ${i * 0.12}s infinite` }}
+            />
+          ))}
+        </svg>
+      );
+    }
+
+    /* ── Hero Section ── */
+    function HeroSection() {
+      return (
+        <section className="hero-bg" style={{ position:'relative', minHeight:'100vh', display:'flex', flexDirection:'column', overflow:'hidden' }}>
+          <NeuralNetwork />
+
+          {/* Nav */}
+          <nav className="glass" style={{ position:'relative', zIndex:10, padding:'18px 56px', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+            <div style={{ fontFamily:"'Playfair Display', serif", fontSize:22, fontWeight:700, letterSpacing:4, color:GOLD }}>
+              GEFFEN AI
+            </div>
+            <div style={{ display:'flex', gap:36 }}>
+              <a href="#transform" className="nav-link">שירותים</a>
+              <a href="#contact"   className="nav-link">אבחון אסטרטגי</a>
+            </div>
+          </nav>
+
+          {/* Content */}
+          <div style={{ flex:1, display:'flex', alignItems:'center', justifyContent:'center', padding:'80px 56px', position:'relative', zIndex:10 }}>
+            <div style={{ maxWidth:880, textAlign:'center' }}>
+              <div className="section-label" style={{ marginBottom:28 }}>
+                GEFFEN GLOBAL &nbsp;·&nbsp; AI AGENCIES
+              </div>
+
+              <h1 className="hero-headline" style={{
+                fontFamily:"'Playfair Display', serif",
+                fontSize:'clamp(30px, 4.8vw, 64px)',
+                fontWeight:700, lineHeight:1.25, color:'#fff', marginBottom:32,
+                animation:'fadeInUp 0.85s ease-out forwards'
+              }}>
+                <span style={{ color:GOLD }}>GEFFEN AI:</span> שכבת האינטליגנציה<br />לארגונים גלובליים
+              </h1>
+
+              <p style={{
+                fontSize:'clamp(15px, 1.8vw, 19px)', color:'rgba(255,255,255,0.6)',
+                lineHeight:1.85, maxWidth:680, margin:'0 auto 48px',
+                animation:'fadeInUp 0.85s 0.2s ease-out both'
+              }}>
+                רתימת 20 שנות ניסיון בתשתיות ומערכות מידע להטמעת בינה מלאכותית אסטרטגית.<br />
+                הופכים מורכבות Legacy לרווח תפעולי.
+              </p>
+
+              <div style={{ display:'flex', gap:16, justifyContent:'center', flexWrap:'wrap', animation:'fadeInUp 0.85s 0.35s ease-out both' }}>
+                <a href="#transform" className="btn-gold">גלה את הפתרון שלך ↓</a>
+                <a href="#contact"   className="btn-ghost">אבחון אסטרטגי</a>
+              </div>
+
+              {/* Stats */}
+              <div className="stats-row" style={{ marginTop:80, display:'flex', justifyContent:'center', gap:64, flexWrap:'wrap' }}>
+                {[['20+','שנות ניסיון'], ['200+','פרויקטים הושלמו'], ['98%','שביעות רצון לקוחות']].map(([n, l]) => (
+                  <div key={l} style={{ textAlign:'center' }}>
+                    <div style={{ fontFamily:"'Playfair Display', serif", fontSize:38, fontWeight:700, color:GOLD, lineHeight:1 }}>{n}</div>
+                    <div style={{ fontSize:11, color:'rgba(255,255,255,0.35)', letterSpacing:2, marginTop:6 }}>{l}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom fade */}
+          <div style={{ position:'absolute', bottom:0, left:0, right:0, height:100, background:'linear-gradient(transparent, #0D0D0D)', pointerEvents:'none' }} />
+        </section>
+      );
+    }
+
+    /* ── Single Transformation Card ── */
+    function TCard({ item, isActive, onClick }) {
+      return (
+        <div className={`t-card ${isActive ? 'active' : ''}`} onClick={onClick}>
+          <div style={{ color: isActive ? GOLD : 'rgba(255,255,255,0.38)', marginBottom:20, transition:'color 0.3s' }}>
+            {item.icon}
+          </div>
+          <h3 style={{ fontSize:17, fontWeight:600, lineHeight:1.45, color: isActive ? '#fff' : 'rgba(255,255,255,0.78)', marginBottom:8 }}>
+            {item.label}
+          </h3>
+          <p style={{ fontSize:11, letterSpacing:1, color: isActive ? GOLD : 'rgba(255,255,255,0.3)' }}>
+            {item.target}
+          </p>
+          {isActive && (
+            <div style={{ marginTop:18, fontSize:12, color:GOLD }}>← לחץ שנית לסגירה</div>
+          )}
+        </div>
+      );
+    }
+
+    /* ── Transformation Selector Section ── */
+    function TransformationSelector({ selected, onSelect }) {
+      return (
+        <section id="transform" style={{ padding:'100px 56px', maxWidth:1200, margin:'0 auto' }}>
+          <div style={{ textAlign:'center', marginBottom:56 }}>
+            <div className="section-label">DIAGNOSTIC FRAMEWORK</div>
+            <h2 style={{ fontFamily:"'Playfair Display', serif", fontSize:'clamp(26px, 3vw, 46px)', fontWeight:700, color:'#fff', marginBottom:14 }}>
+              היכן מתחילים את הטרנספורמציה?
+            </h2>
+            <p style={{ color:'rgba(255,255,255,0.38)', fontSize:14, lineHeight:1.7 }}>
+              בחר את האתגר המרכזי שלך — קבל מפת דרכים מותאמת אישית
+            </p>
+          </div>
+
+          <div className="flex-row-responsive" style={{ display:'flex', gap:22 }}>
+            {TRANSFORMATIONS.map(item => (
+              <TCard
+                key={item.id}
+                item={item}
+                isActive={selected === item.id}
+                onClick={() => onSelect(selected === item.id ? null : item.id)}
+              />
+            ))}
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Dynamic Roadmap Section ── */
+    function DynamicRoadmap({ transformation }) {
+      return (
+        <section className="roadmap-section" style={{ padding:'0 56px 96px', maxWidth:1200, margin:'0 auto' }}>
+          <div className="glass" style={{ borderRadius:6, padding:'52px 44px' }}>
+
+            {/* Roadmap header */}
+            <div style={{ display:'flex', alignItems:'center', gap:16, marginBottom:44, flexWrap:'wrap' }}>
+              <div style={{ color:GOLD }}>{transformation.icon}</div>
+              <div>
+                <div className="section-label" style={{ marginBottom:4 }}>YOUR ROADMAP</div>
+                <h3 style={{ fontFamily:"'Playfair Display', serif", fontSize:26, color:'#fff', fontWeight:600 }}>
+                  {transformation.label}
+                </h3>
+              </div>
+            </div>
+
+            {/* Steps */}
+            <div className="flex-row-responsive" style={{ display:'flex', gap:20, alignItems:'flex-start' }}>
+              {transformation.roadmap.map((step, i) => (
+                <React.Fragment key={step.num}>
+                  <div className="step-item" style={{ flex:1, minWidth:180, animationDelay:`${i * 0.14}s` }}>
+                    <div style={{ fontSize:10, letterSpacing:5, color:GOLD, fontWeight:700, marginBottom:14 }}>
+                      {step.num}
+                    </div>
+                    <div style={{ width:36, height:1.5, background:GOLD, marginBottom:18 }} />
+                    <h4 style={{ fontSize:16, fontWeight:600, color:'#fff', marginBottom:10, lineHeight:1.4 }}>
+                      {step.title}
+                    </h4>
+                    <p style={{ fontSize:13.5, color:'rgba(255,255,255,0.48)', lineHeight:1.75 }}>
+                      {step.desc}
+                    </p>
+                  </div>
+                  {i < transformation.roadmap.length - 1 && (
+                    <div style={{ paddingTop:20, color:'rgba(212,175,55,0.28)', fontSize:22, userSelect:'none', flexShrink:0 }}>←</div>
+                  )}
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* CTA */}
+            <div style={{ marginTop:44, paddingTop:28, borderTop:'1px solid rgba(212,175,55,0.1)', textAlign:'center' }}>
+              <a href="#contact" className="btn-gold">תיאום אבחון אסטרטגי ←</a>
+            </div>
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Contact Section ── */
+    function ContactSection() {
+      const [form, setForm] = useState({ name:'', company:'', role:'', phone:'', email:'', challenge:'' });
+      const [sent, setSent] = useState(false);
+
+      const set = (k) => (e) => setForm({ ...form, [k]: e.target.value });
+
+      return (
+        <section id="contact" style={{
+          background:'linear-gradient(to bottom, #0D0D0D, #111)',
+          padding:'96px 56px',
+          borderTop:'1px solid rgba(212,175,55,0.1)'
+        }}>
+          <div style={{ maxWidth:780, margin:'0 auto' }}>
+            <div style={{ textAlign:'center', marginBottom:56 }}>
+              <div className="section-label">STRATEGIC CONSULTATION</div>
+              <h2 style={{ fontFamily:"'Playfair Display', serif", fontSize:'clamp(26px, 3vw, 46px)', fontWeight:700, color:'#fff', marginBottom:14 }}>
+                תיאום אבחון אסטרטגי בכיר
+              </h2>
+              <p style={{ color:'rgba(255,255,255,0.4)', fontSize:15, lineHeight:1.75 }}>
+                מפגש ראשוני ללא עלות — ניתוח מצב, זיהוי הזדמנויות, הגדרת מסלול מותאם אישית
+              </p>
+            </div>
+
+            {sent ? (
+              /* Success state */
+              <div style={{ textAlign:'center', padding:'60px 40px', border:`1px solid ${GOLD}`, borderRadius:4 }}>
+                <div style={{ fontSize:42, marginBottom:20, color:GOLD }}>✓</div>
+                <h3 style={{ fontFamily:"'Playfair Display', serif", fontSize:28, color:GOLD, marginBottom:12 }}>
+                  תודה על פנייתך
+                </h3>
+                <p style={{ color:'rgba(255,255,255,0.45)', lineHeight:1.7 }}>
+                  נחזור אליך תוך 24 שעות לתיאום הפגישה
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
+                <div className="form-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:18, marginBottom:18 }}>
+                  <div>
+                    <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>שם מלא</label>
+                    <input className="f-input" type="text" required placeholder="ישראל ישראלי" value={form.name} onChange={set('name')} />
+                  </div>
+                  <div>
+                    <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>חברה</label>
+                    <input className="f-input" type="text" required placeholder="שם החברה" value={form.company} onChange={set('company')} />
+                  </div>
+                </div>
+
+                <div className="form-grid-2" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:18, marginBottom:18 }}>
+                  <div>
+                    <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>תפקיד</label>
+                    <input className="f-input" type="text" placeholder="CEO / CTO / COO" value={form.role} onChange={set('role')} />
+                  </div>
+                  <div>
+                    <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>טלפון</label>
+                    <input className="f-input" type="tel" placeholder="+972-50-0000000" dir="ltr" value={form.phone} onChange={set('phone')} />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom:18 }}>
+                  <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>אימייל</label>
+                  <input className="f-input" type="email" required placeholder="your@company.com" dir="ltr" value={form.email} onChange={set('email')} />
+                </div>
+
+                <div style={{ marginBottom:18 }}>
+                  <label style={{ display:'block', fontSize:10, letterSpacing:3, color:GOLD, marginBottom:8 }}>
+                    מה האתגר העיקרי שלך?
+                  </label>
+                  <textarea className="f-input" rows={4}
+                    placeholder="תאר בקצרה את האתגר או ההזדמנות שאתה רואה..."
+                    value={form.challenge} onChange={set('challenge')}
+                    style={{ resize:'vertical' }}
+                  />
+                </div>
+
+                {/* WhatsApp direct line */}
+                <div style={{
+                  padding:'18px 20px', marginBottom:18,
+                  border:'1px dashed rgba(212,175,55,0.28)', borderRadius:3,
+                  textAlign:'center', fontSize:13, color:'rgba(255,255,255,0.38)'
+                }}>
+                  תיאום מהיר דרך&nbsp;
+                  <a href="https://wa.me/+972509697149?text=שלום,%20אני%20מעוניין%20באבחון%20אסטרטגי%20עם%20Geffen%20AI"
+                    style={{ color:GOLD, textDecoration:'none' }}>
+                    WhatsApp ←
+                  </a>
+                  &nbsp;&nbsp;|&nbsp;&nbsp;
+                  <a href="tel:+972509697149" style={{ color:GOLD, textDecoration:'none' }} dir="ltr">+972-50-969-7149</a>
+                </div>
+
+                <button type="submit" className="btn-gold" style={{ width:'100%', fontSize:14, padding:'17px' }}>
+                  שליחת בקשת אבחון ←
+                </button>
+              </form>
+            )}
+          </div>
+        </section>
+      );
+    }
+
+    /* ── Footer ── */
+    function Footer() {
+      return (
+        <footer style={{ background:'#080808', borderTop:'1px solid rgba(212,175,55,0.08)', padding:'44px 56px' }}>
+          <div className="footer-inner" style={{ maxWidth:1200, margin:'0 auto', display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:36 }}>
+            {/* Brand */}
+            <div>
+              <div style={{ fontFamily:"'Playfair Display', serif", fontSize:20, fontWeight:700, letterSpacing:4, color:GOLD, marginBottom:10 }}>
+                GEFFEN AI
+              </div>
+              <p style={{ fontSize:12, color:'rgba(255,255,255,0.3)', maxWidth:260, lineHeight:1.7 }}>
+                שכבת האינטליגנציה לארגונים גלובליים.<br />הופכים מורכבות Legacy לרווח תפעולי.
+              </p>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <div style={{ fontSize:10, letterSpacing:4, color:GOLD, marginBottom:14 }}>יצירת קשר</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
+                <a href="tel:+972509697149"     style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }} dir="ltr">+972-50-969-7149</a>
+                <a href="tel:+972533945012"     style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }} dir="ltr">+972-53-394-5012</a>
+                <a href="mailto:tomer.ganzi@gmail.com" style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }}>tomer.ganzi@gmail.com</a>
+              </div>
+            </div>
+
+            {/* Social */}
+            <div>
+              <div style={{ fontSize:10, letterSpacing:4, color:GOLD, marginBottom:14 }}>רשתות חברתיות</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:9 }}>
+                <a href="https://www.linkedin.com/company/geffen-global"               target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }}>LinkedIn</a>
+                <a href="https://www.instagram.com/geffen_global/"                     target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }}>Instagram</a>
+                <a href="https://www.facebook.com/profile.php?id=61568066532847"       target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }}>Facebook</a>
+                <a href="https://wa.me/+972509697149"                                  target="_blank" rel="noreferrer" style={{ color:'rgba(255,255,255,0.45)', textDecoration:'none', fontSize:13 }}>WhatsApp</a>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom bar */}
+          <div style={{
+            maxWidth:1200, margin:'28px auto 0',
+            paddingTop:22, borderTop:'1px solid rgba(255,255,255,0.04)',
+            display:'flex', justifyContent:'space-between', flexWrap:'wrap', gap:12
+          }}>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,0.18)' }}>© 2025 Geffen Global. All rights reserved.</span>
+            <span style={{ fontSize:11, color:'rgba(255,255,255,0.18)' }}>Powered by Geffen AI Agencies</span>
+          </div>
+        </footer>
+      );
+    }
+
+    /* ── Root App ── */
+    function App() {
+      const [selected, setSelected] = useState(null);
+      const transformation = TRANSFORMATIONS.find(t => t.id === selected);
+
+      return (
+        <div style={{ direction:'rtl' }}>
+          <HeroSection />
+          <TransformationSelector selected={selected} onSelect={setSelected} />
+          {transformation && <DynamicRoadmap key={selected} transformation={transformation} />}
+          <ContactSection />
+          <Footer />
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>

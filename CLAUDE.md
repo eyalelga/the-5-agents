@@ -65,7 +65,7 @@ Reads the user's global profile before tasks to tailor output:
 |-------|------|-----------|-------|
 | Chen | `.claude/agents/chen.md` | Web research — searches internet for articles on request from Reuven, saves raw content + source URL to `Content/`, logs to `chen/Memory/searches.md` | WebSearch, WebFetch, Read, Write, Glob |
 | Yuval | `.claude/agents/yuval.md` | Image generation — scans `reference/`, builds style-consistent prompts, generates via nano-banana-2, saves to `outputs/` | Read, Write, Glob, Bash |
-| Yael | `.claude/agents/yael.md` | Content writing — rewrites raw articles from `Content/` in project voice, calls Yuval for images, saves to `Output/`, archives originals to `Content/Ready/` | Read, Write, Glob, Task |
+| Yael | `.claude/agents/yael.md` | Content writing — rewrites raw articles from `Content/` in project voice, calls Yuval for images, saves to `Output/`, archives originals to `Content/Ready/`. Supports 4 HTML output formats: `article` (default), `landing-page`, `brochure`, `slides` — set via `FORMAT:` in `Content/STYLE.md` | Read, Write, Glob, Task |
 | Guy | `.claude/agents/guy.md` | QA — final gatekeeper. Receives Yael's `Output/` article + original brief, runs 10-point checklist, saves report to `guy/QA_Reports/`, returns ✅ Approved or ❌ Requires Fix. Max 3 rounds. | Read, Write, Glob |
 
 ### User Global Profile
@@ -92,3 +92,17 @@ Requires `GEMINI_API_KEY` in `.env`.
 - **Update vault:** Follow `obsidian-vault-workflow` — append to `vault/Meeting Notes/<topic>.md`.
 - **Update profile:** Edit files in `C:/Users/User/.claude/profile/` directly.
 - **Push changes:** `git add` → `git commit` → `git push` (permitted in settings.json).
+- **Set output format:** Add `FORMAT: landing-page` (or `brochure` / `slides` / `article`) to `Content/STYLE.md` before running Yael.
+
+## Output Formats (Yael)
+
+Yael generates HTML in 4 formats. Set format in `Content/STYLE.md`:
+
+| Format | Description | Best for |
+|--------|-------------|----------|
+| `article` | Clean single-column readable article | Blog, internal docs |
+| `landing-page` | Full-width hero, sticky nav, CTA section, alternating sections | Media distribution, marketing |
+| `brochure` | Two-column print-ready layout, A4 proportions | Print, PDF export, formal distribution |
+| `slides` | Full-screen HTML slideshow, keyboard navigation | Presentations, pitches |
+
+**To share via URL:** Enable GitHub Pages on this repo → every `Output/*.html` becomes accessible at `https://<username>.github.io/the-5-agents/Output/<filename>.html`.

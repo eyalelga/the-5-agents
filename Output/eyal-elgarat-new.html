@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>אייל אלגרט | ייעוץ IT ואוטומציות עסקיות</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Segoe UI', 'Arial', sans-serif; color: #1a1a2e; line-height: 1.75; font-size: 17px; background: #fff; }
+
+    /* ── Navbar ── */
+    nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 1000;
+      background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 64px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+    }
+    nav .brand { display: flex; align-items: center; }
+    nav .brand img { height: 44px; background: white; border-radius: 8px; padding: 4px 8px; }
+    nav ul { list-style: none; display: flex; gap: 28px; }
+    nav ul li a { color: #94a3b8; text-decoration: none; font-size: 0.92rem; transition: color 0.2s; }
+    nav ul li a:hover { color: white; }
+    nav .nav-cta {
+      background: #2563eb; color: white !important; padding: 8px 22px;
+      border-radius: 24px; font-weight: 600; transition: background 0.2s !important;
+    }
+    nav .nav-cta:hover { background: #1d4ed8 !important; }
+
+    /* ── Hero ── */
+    .hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: linear-gradient(150deg, #0f172a 0%, #1e3a5f 45%, #1e40af 100%);
+      padding: 100px 40px 60px; text-align: center; color: white;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 70% 50%, rgba(59,130,246,0.15) 0%, transparent 65%);
+    }
+    .hero-logo {
+      height: 90px; background: white; border-radius: 16px;
+      padding: 8px 16px; margin-bottom: 32px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4);
+      color: #93c5fd; border-radius: 24px; padding: 8px 20px;
+      font-size: 0.9rem; font-weight: 600; margin-bottom: 28px;
+      position: relative;
+    }
+    .hero-badge::before { content: '●'; color: #34d399; font-size: 0.7rem; }
+    .hero h1 {
+      font-size: 3.8rem; font-weight: 900; line-height: 1.1;
+      margin-bottom: 8px; position: relative;
+      background: linear-gradient(135deg, #ffffff, #93c5fd);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero h2 {
+      font-size: 1.4rem; font-weight: 400; color: #7dd3fc;
+      margin-bottom: 24px; position: relative;
+    }
+    .hero .tagline {
+      font-size: 1.15rem; color: #cbd5e1; max-width: 640px;
+      margin-bottom: 48px; position: relative; line-height: 1.8;
+    }
+    .hero-stats {
+      display: flex; gap: 48px; justify-content: center;
+      margin-bottom: 52px; position: relative;
+    }
+    .stat { text-align: center; }
+    .stat .num { font-size: 2.6rem; font-weight: 900; color: #60a5fa; line-height: 1; }
+    .stat .lbl { font-size: 0.9rem; color: #94a3b8; margin-top: 4px; }
+    .hero-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; position: relative; }
+    .btn-primary {
+      background: #2563eb; color: white; padding: 16px 44px;
+      border-radius: 50px; font-size: 1.1rem; font-weight: 700;
+      text-decoration: none; transition: all 0.25s;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.4);
+    }
+    .btn-primary:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 12px 32px rgba(37,99,235,0.5); }
+    .btn-outline {
+      border: 2px solid rgba(255,255,255,0.3); color: white; padding: 16px 44px;
+      border-radius: 50px; font-size: 1.1rem; font-weight: 600;
+      text-decoration: none; transition: all 0.25s; display: flex; align-items: center; gap: 8px;
+    }
+    .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+    .btn-whatsapp {
+      background: #25d366; color: white; padding: 16px 44px;
+      border-radius: 50px; font-size: 1.1rem; font-weight: 700;
+      text-decoration: none; transition: all 0.25s; display: flex; align-items: center; gap: 8px;
+      box-shadow: 0 8px 24px rgba(37,211,102,0.35);
+    }
+    .btn-whatsapp:hover { background: #1ebe5d; transform: translateY(-2px); }
+
+    /* ── Value cards ── */
+    .values { background: #f8fafc; padding: 90px 40px; }
+    .section-label {
+      text-align: center; color: #2563eb; font-weight: 700;
+      font-size: 0.9rem; letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .section-title {
+      text-align: center; font-size: 2.1rem; font-weight: 800;
+      color: #0f172a; margin-bottom: 12px; line-height: 1.3;
+    }
+    .section-sub {
+      text-align: center; color: #64748b; font-size: 1.05rem;
+      max-width: 600px; margin: 0 auto 56px;
+    }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; max-width: 1120px; margin: 0 auto; }
+    .card {
+      background: white; border-radius: 16px; padding: 36px 28px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06); transition: all 0.3s;
+      border-top: 4px solid transparent;
+    }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); border-top-color: #2563eb; }
+    .card-icon { font-size: 2.4rem; margin-bottom: 18px; }
+    .card h3 { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+    .card p { font-size: 0.97rem; color: #64748b; line-height: 1.7; }
+
+    /* ── Services ── */
+    .services { background: white; padding: 90px 40px; }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; max-width: 1120px; margin: 0 auto; }
+    .service-item {
+      padding: 40px 32px; border-radius: 20px;
+      background: #f8fafc; transition: all 0.3s; cursor: default;
+      border: 1px solid #e2e8f0;
+    }
+    .service-item:hover { background: #eff6ff; border-color: #bfdbfe; }
+    .service-item .icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: linear-gradient(135deg, #1e3a5f, #2563eb);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 20px;
+      box-shadow: 0 4px 16px rgba(37,99,235,0.25);
+    }
+    .service-item h3 { font-size: 1.15rem; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .service-item p { font-size: 0.97rem; color: #64748b; line-height: 1.7; }
+    .service-item ul { list-style: none; padding: 0; margin-top: 12px; }
+    .service-item ul li { font-size: 0.92rem; color: #475569; padding: 4px 0; display: flex; align-items: center; gap: 8px; }
+    .service-item ul li::before { content: '✓'; color: #2563eb; font-weight: 700; flex-shrink: 0; }
+
+    /* ── Automation spotlight ── */
+    .automation {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      padding: 90px 40px; color: white;
+    }
+    .automation .section-title { color: white; }
+    .automation .section-sub { color: #94a3b8; }
+    .automation .section-label { color: #60a5fa; }
+    .auto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; max-width: 1120px; margin: 0 auto; align-items: center; }
+    .auto-text h3 { font-size: 1.6rem; font-weight: 800; color: white; margin-bottom: 20px; line-height: 1.3; }
+    .auto-text p { color: #94a3b8; font-size: 1.05rem; line-height: 1.8; margin-bottom: 20px; }
+    .auto-steps { list-style: none; padding: 0; margin-top: 8px; }
+    .auto-steps li { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
+    .auto-steps .num {
+      flex-shrink: 0; width: 36px; height: 36px; border-radius: 50%;
+      background: rgba(37,99,235,0.3); border: 1px solid #3b82f6;
+      color: #60a5fa; font-weight: 800; font-size: 0.95rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .auto-steps .txt { color: #cbd5e1; font-size: 1rem; padding-top: 6px; }
+    .auto-steps .txt strong { color: white; }
+    .auto-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .auto-box {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 28px 24px; transition: background 0.3s;
+    }
+    .auto-box:hover { background: rgba(37,99,235,0.15); border-color: rgba(59,130,246,0.3); }
+    .auto-box .box-icon { font-size: 2rem; margin-bottom: 12px; }
+    .auto-box h4 { font-size: 1rem; font-weight: 700; color: white; margin-bottom: 8px; }
+    .auto-box p { font-size: 0.9rem; color: #94a3b8; line-height: 1.6; }
+
+    /* ── Skills ── */
+    .skills { background: #f8fafc; padding: 90px 40px; }
+    .skills-inner { max-width: 1120px; margin: 0 auto; }
+    .skill-groups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+    .skill-group { background: white; border-radius: 16px; padding: 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.05); }
+    .skill-group h3 { font-size: 1rem; font-weight: 700; color: #1e3a5f; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .skill-tag { background: #eff6ff; color: #1d4ed8; border-radius: 8px; padding: 5px 12px; font-size: 0.85rem; font-weight: 600; }
+
+    /* ── Timeline ── */
+    .timeline-section { background: white; padding: 90px 40px; }
+    .timeline { max-width: 800px; margin: 0 auto; position: relative; }
+    .timeline::before {
+      content: ''; position: absolute; right: 20px; top: 0; bottom: 0;
+      width: 2px; background: linear-gradient(to bottom, #2563eb, #e2e8f0);
+    }
+    .tl-item { padding-right: 60px; margin-bottom: 48px; position: relative; }
+    .tl-item::before {
+      content: ''; position: absolute; right: 11px; top: 6px;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: #2563eb; border: 3px solid white; box-shadow: 0 0 0 3px #2563eb;
+    }
+    .tl-date { font-size: 0.85rem; font-weight: 700; color: #2563eb; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .tl-item h3 { font-size: 1.2rem; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .tl-item .org { font-size: 1rem; color: #2563eb; font-weight: 600; margin-bottom: 12px; }
+    .tl-item ul { list-style: none; padding: 0; }
+    .tl-item ul li { font-size: 0.97rem; color: #475569; padding: 4px 0; padding-right: 16px; position: relative; }
+    .tl-item ul li::before { content: '—'; position: absolute; right: 0; color: #94a3b8; }
+
+    /* ── Certs ── */
+    .certs { background: #f8fafc; padding: 90px 40px; }
+    .certs-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; max-width: 900px; margin: 0 auto; }
+    .cert-badge {
+      background: white; border: 1px solid #e2e8f0; border-radius: 14px;
+      padding: 20px 28px; display: flex; align-items: center; gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s;
+    }
+    .cert-badge:hover { border-color: #93c5fd; box-shadow: 0 4px 16px rgba(37,99,235,0.1); transform: translateY(-2px); }
+    .cert-badge .badge-icon { font-size: 1.8rem; }
+    .cert-badge .badge-title { font-size: 0.95rem; font-weight: 700; color: #0f172a; }
+    .cert-badge .badge-year { font-size: 0.82rem; color: #64748b; }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+      padding: 100px 40px; text-align: center; color: white;
+    }
+    .cta-section h2 { font-size: 2.6rem; font-weight: 900; margin-bottom: 20px; line-height: 1.2; }
+    .cta-section p { font-size: 1.15rem; color: #bfdbfe; max-width: 600px; margin: 0 auto 44px; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 40px; }
+    .contact-info { display: flex; gap: 32px; justify-content: center; margin-top: 8px; flex-wrap: wrap; }
+    .contact-info a { color: #93c5fd; text-decoration: none; font-size: 1rem; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+    .contact-info a:hover { color: white; }
+
+    /* ── Footer ── */
+    footer { background: #0f172a; color: #475569; text-align: center; padding: 32px 40px; font-size: 0.88rem; line-height: 1.9; }
+    footer a { color: #60a5fa; text-decoration: none; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      nav ul { display: none; }
+      .hero h1 { font-size: 2.4rem; }
+      .cards { grid-template-columns: 1fr 1fr; }
+      .services-grid { grid-template-columns: 1fr 1fr; }
+      .skill-groups { grid-template-columns: 1fr 1fr; }
+      .auto-grid { grid-template-columns: 1fr; gap: 40px; }
+      .hero-stats { gap: 28px; }
+    }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2rem; }
+      .hero-stats { flex-direction: column; gap: 20px; }
+      .cards { grid-template-columns: 1fr; }
+      .services-grid { grid-template-columns: 1fr; }
+      .skill-groups { grid-template-columns: 1fr; }
+      .auto-boxes { grid-template-columns: 1fr; }
+      .cta-btns { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navbar ── -->
+<nav>
+  <div class="brand">
+    <img src="eyal-logo.png" alt="Eyal Elgarat">
+  </div>
+  <ul>
+    <li><a href="#value">ערך</a></li>
+    <li><a href="#services">שירותים</a></li>
+    <li><a href="#automation">אוטומציה</a></li>
+    <li><a href="#experience">ניסיון</a></li>
+    <li><a href="#contact" class="nav-cta">צרו קשר</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <img class="hero-logo" src="eyal-logo.png" alt="Eyal Elgarat">
+  <div class="hero-badge">זמין לפרויקטים חדשים — 2026</div>
+  <h1>אייל אלגרט</h1>
+  <h2>ייעוץ IT | אבטחת מידע | אוטומציות עסקיות</h2>
+  <p class="tagline">
+    אני לא בא להתקין ציוד — אני בא לגרום לארגון שלכם לעבוד חכם יותר,
+    להוציא פחות, ולצמוח מהר יותר. 25 שנות ניסיון. תוצאות מדידות.
+  </p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="num">25+</div>
+      <div class="lbl">שנות ניסיון</div>
+    </div>
+    <div class="stat">
+      <div class="num">M365</div>
+      <div class="lbl">Administrator Expert</div>
+    </div>
+    <div class="stat">
+      <div class="num">MCSE</div>
+      <div class="lbl">Microsoft Certified</div>
+    </div>
+    <div class="stat">
+      <div class="num">∞</div>
+      <div class="lbl">זמינות לCEO ישיר</div>
+    </div>
+  </div>
+  <div class="hero-btns">
+    <a href="tel:036007050" class="btn-primary">📞 03-6007050</a>
+    <a href="https://wa.me/972545402010" class="btn-whatsapp">💬 WhatsApp</a>
+    <a href="#services" class="btn-outline">מה אני עושה</a>
+  </div>
+</section>
+
+<!-- ── Value Proposition ── -->
+<section class="values" id="value">
+  <p class="section-label">למה לבחור בי</p>
+  <h2 class="section-title">ארבעה עמודי תווך שמייצרים ערך אמיתי</h2>
+  <p class="section-sub">לא רק IT — שותף אסטרטגי שמבין את העסק ומתרגם טכנולוגיה לתוצאות</p>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">💰</div>
+      <h3>חיסכון מדיד בעלויות</h3>
+      <p>מיטוב רישיונות, ניהול ספקים, וביטול כפילויות — ארגונים מפחיתים הוצאות IT ב-20–40% תוך חצי שנה.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔐</div>
+      <h3>אבטחה שמגינה</h3>
+      <p>שכבות הגנה מבוססות Microsoft Zero Trust — MFA, Conditional Access, DLP, Defender. אבטחה שעובדת בשקט.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>תשתית שלא נשברת</h3>
+      <p>תכנון, פריסה ותחזוקה של תשתיות IT ותקשורת לזמינות מרבית. פחות תקלות, יותר פרודוקטיביות.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🤖</div>
+      <h3>אוטומציה שמשחררת זמן</h3>
+      <p>תהליכים עסקיים אוטומטיים מבוססי AI — מה שלוקח שעות היום, ייקח שניות מחר.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── Services ── -->
+<section class="services" id="services">
+  <p class="section-label">מה אני עושה</p>
+  <h2 class="section-title">שירותים</h2>
+  <p class="section-sub">פתרון מקיף — מהתשתית הפיזית עד השכבות הדיגיטליות</p>
+  <div class="services-grid">
+
+    <div class="service-item">
+      <div class="icon">☁️</div>
+      <h3>Microsoft 365 — הגירה וניהול</h3>
+      <p>מהגירה מלאה מ-On-Premise לענן, ניהול שוטף, ואופטימיזציה של רישיונות ומשאבים.</p>
+      <ul>
+        <li>Entra ID & Exchange Online</li>
+        <li>SharePoint & Teams</li>
+        <li>Intune & Autopilot</li>
+        <li>אופטימיזציית רישיונות</li>
+      </ul>
+    </div>
+
+    <div class="service-item">
+      <div class="icon">🛡️</div>
+      <h3>אבטחת מידע ועמידה בתקנות</h3>
+      <p>בניית ארכיטקטורת אבטחה מבוססת Zero Trust — מניעת דליפות, ניהול גישה ועמידה ב-GDPR.</p>
+      <ul>
+        <li>MFA & Conditional Access</li>
+        <li>DLP & Microsoft Purview</li>
+        <li>Defender for Endpoint</li>
+        <li>ביקורת אבטחה ותיקון פגיעויות</li>
+      </ul>
+    </div>
+
+    <div class="service-item">
+      <div class="icon">🌐</div>
+      <h3>תשתיות רשת ותקשורת</h3>
+      <p>תכנון, פריסה וניהול תשתיות רשת מורכבות — ממשרד קטן ועד שרשרת סניפים ארצית.</p>
+      <ul>
+        <li>Wi-Fi 6, CAT6/7, סיבים אופטיים</li>
+        <li>Windows Server & Active Directory</li>
+        <li>VPN & אבטחת גישה מרחוק</li>
+        <li>ניהול ספקי תקשורת ו-SLA</li>
+      </ul>
+    </div>
+
+    <div class="service-item">
+      <div class="icon">📹</div>
+      <h3>מערכות חכמות ומצלמות</h3>
+      <p>מעל 25 שנות ניסיון בתכנון והתקנת מערכות אבטחה, IoT ואוטומציה ביתית ועסקית.</p>
+      <ul>
+        <li>מערכות CCTV חכמות</li>
+        <li>מערכות אזעקה ובקרת כניסה</li>
+        <li>IoT ואוטומציה חכמה</li>
+        <li>אינטגרציה עם מערכות קיימות</li>
+      </ul>
+    </div>
+
+    <div class="service-item">
+      <div class="icon">🏥</div>
+      <h3>תוכנות רפואיות ו-POS</h3>
+      <p>ניסיון ייחודי בסביבות רגולטוריות — ניהול IT במרכזים רפואיים ושרשראות קמעונאות.</p>
+      <ul>
+        <li>ניהול תוכנות ניהול מרפאה</li>
+        <li>מערכות POS וקופות</li>
+        <li>תמיכה בציוד רפואי מחובר</li>
+        <li>עמידה בדרישות פרטיות ורגולציה</li>
+      </ul>
+    </div>
+
+    <div class="service-item">
+      <div class="icon">📊</div>
+      <h3>אסטרטגיית IT וניהול ספקים</h3>
+      <p>ייעוץ ברמת C-Level — בניית מפת דרכים טכנולוגית, תקצוב IT, ומשא ומתן עם ספקים.</p>
+      <ul>
+        <li>ביקורת IT ותכנית שיפור</li>
+        <li>ניהול חוזי ספקים ו-SLA</li>
+        <li>תקצוב ומיטוב ROI טכנולוגי</li>
+        <li>דיווח ישיר להנהלה בכירה</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── Automation Spotlight ── -->
+<section class="automation" id="automation">
+  <p class="section-label">השירות החדש</p>
+  <h2 class="section-title">אוטומציות עסקיות מבוססות AI</h2>
+  <p class="section-sub">תהליכים שחוזרים על עצמם הם כסף שנשפך לפח. בואו נסתום את הפח.</p>
+
+  <div class="auto-grid" style="margin-top: 56px;">
+    <div class="auto-text">
+      <h3>נבנה ביחד תהליכים שעובדים בלי התערבות אנושית</h3>
+      <p>כל ארגון מלא בתהליכים ידניים שחוזרים על עצמם כל יום — דוחות, עדכוני מלאי, תיאום לוחות זמנים, מעקב לידים, ניהול טיקטים. כל אחד מאלה עולה זמן, טועה בגלל עייפות, ולא מדרג עם הצמיחה.</p>
+      <p>אני בונה עם כל לקוח את האוטומציות שמתאימות לו — מחוברות לכלים שכבר קיימים: Microsoft 365, CRM, ERP, ומערכות פנימיות.</p>
+      <ul class="auto-steps">
+        <li><div class="num">1</div><div class="txt"><strong>מיפוי תהליכים</strong> — מזהים מה חוזר, מה לוקח זמן, מה טועה</div></li>
+        <li><div class="num">2</div><div class="txt"><strong>תכנון הפתרון</strong> — בונים את הלוגיקה ביחד, מסכימים על הפלט</div></li>
+        <li><div class="num">3</div><div class="txt"><strong>פריסה ובדיקות</strong> — יישום, בדיקות קצה, מסירה עם הדרכה</div></li>
+        <li><div class="num">4</div><div class="txt"><strong>מדידה ושיפור</strong> — עוקבים אחרי תוצאות, מייעלים בהמשך</div></li>
+      </ul>
+    </div>
+    <div class="auto-boxes">
+      <div class="auto-box">
+        <div class="box-icon">📧</div>
+        <h4>אוטומציות תקשורת</h4>
+        <p>מענה אוטומטי, ניתוב מיילים, התראות חכמות — ללא יד אדם</p>
+      </div>
+      <div class="auto-box">
+        <div class="box-icon">📋</div>
+        <h4>דוחות אוטומטיים</h4>
+        <p>דשבורד מנהלים שמתעדכן לבד, שולח לעצמו, ומסמן חריגות</p>
+      </div>
+      <div class="auto-box">
+        <div class="box-icon">🔗</div>
+        <h4>אינטגרציות מערכות</h4>
+        <p>CRM, ERP, M365 — מדברים אחד עם השני בלי ייצוא ידני</p>
+      </div>
+      <div class="auto-box">
+        <div class="box-icon">🧠</div>
+        <h4>AI Agents עסקיים</h4>
+        <p>סוכני AI שמבצעים משימות חוזרות — מחקר, סיכום, ניסוח</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Skills ── -->
+<section class="skills" id="skills">
+  <p class="section-label">מיומנויות</p>
+  <h2 class="section-title">מחסן הכלים</h2>
+  <p class="section-sub">25 שנות ניסיון מתורגמות לטכנולוגיות אחת לצד השנייה</p>
+  <div class="skills-inner">
+    <div class="skill-groups">
+      <div class="skill-group">
+        <h3>☁️ Microsoft 365 & Cloud</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Entra ID</span>
+          <span class="skill-tag">Exchange Online</span>
+          <span class="skill-tag">SharePoint</span>
+          <span class="skill-tag">Teams</span>
+          <span class="skill-tag">Intune</span>
+          <span class="skill-tag">Autopilot</span>
+          <span class="skill-tag">Azure AD</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>🛡️ אבטחת מידע</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">MFA</span>
+          <span class="skill-tag">Conditional Access</span>
+          <span class="skill-tag">DLP</span>
+          <span class="skill-tag">Defender</span>
+          <span class="skill-tag">Purview</span>
+          <span class="skill-tag">Zero Trust</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>🖥️ תשתיות ו-Endpoints</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Windows Server</span>
+          <span class="skill-tag">Active Directory</span>
+          <span class="skill-tag">Wi-Fi 6</span>
+          <span class="skill-tag">CAT6/7</span>
+          <span class="skill-tag">Fiber</span>
+          <span class="skill-tag">VPN</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>📹 מערכות חכמות</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">CCTV</span>
+          <span class="skill-tag">מערכות אזעקה</span>
+          <span class="skill-tag">IoT</span>
+          <span class="skill-tag">Smart Automation</span>
+          <span class="skill-tag">בקרת כניסה</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>🏢 סביבות מיוחדות</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">Medical Software</span>
+          <span class="skill-tag">POS Systems</span>
+          <span class="skill-tag">Retail IT</span>
+          <span class="skill-tag">Clinic Networks</span>
+        </div>
+      </div>
+      <div class="skill-group">
+        <h3>🤖 AI & אוטומציה</h3>
+        <div class="skill-tags">
+          <span class="skill-tag">AI Agents</span>
+          <span class="skill-tag">Business Automation</span>
+          <span class="skill-tag">Workflow Design</span>
+          <span class="skill-tag">M365 Power Platform</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Experience Timeline ── -->
+<section class="timeline-section" id="experience">
+  <p class="section-label">ניסיון מקצועי</p>
+  <h2 class="section-title">מסלול הקריירה</h2>
+  <p class="section-sub" style="margin-bottom: 56px;">25 שנות ניסיון מעשי בשטח — ממגזר הבריאות, הקמעונאות, ועד לחברות טכנולוגיה</p>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-date">2024 — הווה</div>
+      <h3>IT Specialist</h3>
+      <div class="org">Alpha Brain Center</div>
+      <ul>
+        <li>ניהול מלא של תשתית IT כולל ציוד ותוכנה רפואית</li>
+        <li>הבטחת יציבות הרשת ואופטימיזציית המערכות</li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2022 — 2024</div>
+      <h3>מנהל IT ומערכות מידע</h3>
+      <div class="org">Donna Victoria & Mor Cooper</div>
+      <ul>
+        <li>הובלת מערכות תקשורת ומידע לשרשרת קמעונאות ארצית</li>
+        <li>ניהול מערכות POS ורשתות מאובטחות</li>
+        <li>דיווח ישיר ל-CEO ועבודה מול הנהלה בכירה</li>
+        <li>תמיכה טכנית, תחזוקת מכשירים ופריסת תוכנות</li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">1995 — 2021</div>
+      <h3>מייסד ויועץ ראשי</h3>
+      <div class="org">Eyal Elgarat — IT & Low-Voltage Services</div>
+      <ul>
+        <li>ייסוד וניהול עסק IT ותשתיות מוצלח במשך 26 שנה</li>
+        <li>Intelligent Computing: CCTV חכם, מערכות אזעקה, IoT</li>
+        <li>ביצוע פרויקטי תשתית ואבטחה בקנה מידה גדול</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── Certifications ── -->
+<section class="certs" id="certs">
+  <p class="section-label">הסמכות</p>
+  <h2 class="section-title">הכשרה והסמכות מקצועיות</h2>
+  <p class="section-sub" style="margin-bottom: 48px;">ידע מאושר, ניסיון מוכח</p>
+  <div class="certs-grid">
+    <div class="cert-badge">
+      <div class="badge-icon">🏆</div>
+      <div class="badge-text">
+        <div class="badge-title">Microsoft 365 Administrator Expert</div>
+        <div class="badge-year">הסמכה פעילה</div>
+      </div>
+    </div>
+    <div class="cert-badge">
+      <div class="badge-icon">🎖️</div>
+      <div class="badge-text">
+        <div class="badge-title">MCSE — Microsoft Certified Network Engineer</div>
+        <div class="badge-year">2007</div>
+      </div>
+    </div>
+    <div class="cert-badge">
+      <div class="badge-icon">⚡</div>
+      <div class="badge-text">
+        <div class="badge-title">Certified Low Voltage Installer</div>
+        <div class="badge-year">2016</div>
+      </div>
+    </div>
+    <div class="cert-badge">
+      <div class="badge-icon">🖥️</div>
+      <div class="badge-text">
+        <div class="badge-title">Computing & OS Certification</div>
+        <div class="badge-year">משרד העבודה — 2006</div>
+      </div>
+    </div>
+    <div class="cert-badge">
+      <div class="badge-icon">🔧</div>
+      <div class="badge-text">
+        <div class="badge-title">Electronics Technician</div>
+        <div class="badge-year">1990</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="cta-section" id="contact">
+  <h2>מוכנים לשדרג את ה-IT שלכם?</h2>
+  <p>שיחת ייעוץ ראשונה ללא עלות — נבין את האתגרים שלכם ונבנה תוכנית פעולה.</p>
+  <div class="cta-btns">
+    <a href="tel:036007050" class="btn-primary">📞 03-6007050</a>
+    <a href="https://wa.me/972545402010" class="btn-whatsapp">💬 054-5402010 (WhatsApp)</a>
+  </div>
+  <div class="contact-info">
+    <a href="tel:036007050">📞 03-6007050</a>
+    <a href="https://wa.me/972545402010">💬 054-5402010</a>
+    <a href="mailto:eyal.sys@gmail.com">✉️ eyal.sys@gmail.com</a>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer>
+  <p>© 2026 אייל אלגרט | ייעוץ IT ואוטומציות עסקיות</p>
+  <p>📞 <a href="tel:036007050">03-6007050</a> &nbsp;|&nbsp; 💬 <a href="https://wa.me/972545402010">054-5402010</a> &nbsp;|&nbsp; ✉️ <a href="mailto:eyal.sys@gmail.com">eyal.sys@gmail.com</a></p>
+  <p style="margin-top:8px; font-size:0.8rem;">נבנה עם <a href="#">The 5 Agents</a></p>
+</footer>
+
+</body>
+</html>
